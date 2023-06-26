@@ -43,7 +43,7 @@ import {
   useOptionalComponent
 } from '../../ecs/functions/ComponentFunctions'
 import { entityExists, removeEntity, useEntityContext } from '../../ecs/functions/EntityFunctions'
-import { EntityTreeComponent } from '../../ecs/functions/EntityTree'
+import { EntityTreeComponent, iterateEntityNode } from '../../ecs/functions/EntityTree'
 import { BoundingBoxComponent } from '../../interaction/components/BoundingBoxComponents'
 import { SourceType } from '../../renderer/materials/components/MaterialSource'
 import { removeMaterialSource } from '../../renderer/materials/functions/MaterialLibraryFunctions'
@@ -52,6 +52,7 @@ import { generateMeshBVH } from '../functions/bvhWorkerPool'
 import { addError, removeError } from '../functions/ErrorFunctions'
 import { parseGLTFModel } from '../functions/loadGLTFModel'
 import { enableObjectLayer } from '../functions/setObjectLayers'
+import { GLTFLoadedComponent } from './GLTFLoadedComponent'
 import { addObjectToGroup, GroupComponent, removeObjectFromGroup } from './GroupComponent'
 import { SceneAssetPendingTagComponent } from './SceneAssetPendingTagComponent'
 import { SceneObjectComponent } from './SceneObjectComponent'
@@ -159,6 +160,14 @@ function ModelReactor() {
               removeError(entity, ModelComponent, 'LOADING_ERROR')
               loadedAsset.scene.userData.src = model.src
               loadedAsset.scene.userData.type === 'glb' && delete loadedAsset.scene.userData.type
+              const modelEntities = iterateEntityNode(
+                entity,
+                (child) => child,
+                (child) => child !== entity && hasComponent(child, GLTFLoadedComponent)
+              )
+              for (const modelEntity of modelEntities) {
+                removeEntity(modelEntity)
+              }
               model.scene && removeObjectFromGroup(entity, model.scene)
               modelComponent.scene.set(loadedAsset.scene)
               if (!hasComponent(entity, SceneAssetPendingTagComponent)) return
@@ -197,7 +206,7 @@ function ModelReactor() {
     if (!scene) return
     addObjectToGroup(entity, scene)
 
-    if (groupComponent?.value?.find((group: any) => group === scene)) return
+    //if (groupComponent?.value?.find((group: any) => group === scene)) return
     parseGLTFModel(entity)
     setComponent(entity, BoundingBoxComponent)
 

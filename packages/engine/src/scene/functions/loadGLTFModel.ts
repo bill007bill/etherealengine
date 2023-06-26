@@ -39,15 +39,22 @@ import {
 } from '../../ecs/functions/ComponentFunctions'
 import { createEntity } from '../../ecs/functions/EntityFunctions'
 import { addEntityNodeChild } from '../../ecs/functions/EntityTree'
-import { setLocalTransformComponent, TransformComponent } from '../../transform/components/TransformComponent'
+import {
+  LocalTransformComponent,
+  setLocalTransformComponent,
+  TransformComponent
+} from '../../transform/components/TransformComponent'
 import { computeLocalTransformMatrix, computeTransformMatrix } from '../../transform/systems/TransformSystem'
 import { GLTFLoadedComponent } from '../components/GLTFLoadedComponent'
-import { addObjectToGroup, GroupComponent } from '../components/GroupComponent'
+import { addObjectToGroup, GroupComponent, Object3DWithEntity } from '../components/GroupComponent'
+import { MeshComponent } from '../components/MeshComponent'
 import { ModelComponent } from '../components/ModelComponent'
 import { NameComponent } from '../components/NameComponent'
 import { SceneObjectComponent } from '../components/SceneObjectComponent'
+import { VisibleComponent } from '../components/VisibleComponent'
 import { ObjectLayers } from '../constants/ObjectLayers'
 import { deserializeComponent } from '../systems/SceneLoadingSystem'
+import iterateObject3D from '../util/iterateObject3D'
 import { setObjectLayers } from './setObjectLayers'
 
 export const parseECSData = (entity: Entity, data: [string, any][]): void => {
@@ -149,9 +156,32 @@ export const parseGLTFModel = (entity: Entity) => {
   if (!model.scene) return
   const scene = model.scene
   scene.updateMatrixWorld(true)
-
   // always parse components first
-  parseObjectComponentsFromGLTF(entity, scene)
+  iterateObject3D(scene, (obj) => {
+    if (obj === scene) return
+    const objEntity = createEntity()
+    const parentEntity = obj === scene ? entity : (obj.parent as Object3DWithEntity).entity
+    addEntityNodeChild(objEntity, parentEntity, obj.uuid as EntityUUID)
+    setComponent(objEntity, LocalTransformComponent, {
+      position: obj.position,
+      rotation: obj.quaternion,
+      scale: obj.scale,
+      parentEntity
+    })
+    hasComponent(parentEntity, LocalTransformComponent) && computeLocalTransformMatrix(parentEntity)
+    computeTransformMatrix(parentEntity)
+    setComponent(objEntity, NameComponent, obj.userData['xrengine.entity'] ?? obj.name)
+    addObjectToGroup(objEntity, obj)
+    setComponent(objEntity, VisibleComponent, true)
+    setComponent(objEntity, GLTFLoadedComponent, ['entity'])
+    createObjectEntityFromGLTF(objEntity, obj)
+    const mesh = obj as Mesh
+    if (mesh.isMesh) {
+      setComponent(objEntity, MeshComponent, mesh)
+    }
+  })
+
+  //parseObjectComponentsFromGLTF(entity, scene)
 
   setObjectLayers(scene, ObjectLayers.Scene)
 

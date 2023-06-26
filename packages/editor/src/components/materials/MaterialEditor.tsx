@@ -51,8 +51,8 @@ import SelectInput from '../inputs/SelectInput'
 import StringInput from '../inputs/StringInput'
 import PaginatedList from '../layout/PaginatedList'
 
-export default function MaterialEditor({ material, ...rest }: { material: Material }) {
-  if (material === undefined) return <></>
+export default function MaterialEditor({ material, ...rest }: { material: Material | null }) {
+  if (!material) return <></>
   const materialLibrary = useState(getMutableState(MaterialLibraryState))
   const materialComponent = materialLibrary.materials[material.uuid]
   const prototypeComponent = materialLibrary.prototypes[materialComponent.prototype.value]

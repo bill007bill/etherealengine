@@ -43,6 +43,7 @@ import { InstancingComponent } from '@etherealengine/engine/src/scene/components
 import { InteriorComponent } from '@etherealengine/engine/src/scene/components/InteriorComponent'
 import { MediaComponent } from '@etherealengine/engine/src/scene/components/MediaComponent'
 import { MediaSettingsComponent } from '@etherealengine/engine/src/scene/components/MediaSettingsComponent'
+import { MeshComponent } from '@etherealengine/engine/src/scene/components/MeshComponent'
 import { ModelComponent } from '@etherealengine/engine/src/scene/components/ModelComponent'
 import { MountPointComponent } from '@etherealengine/engine/src/scene/components/MountPointComponent'
 import { OceanComponent } from '@etherealengine/engine/src/scene/components/OceanComponent'
@@ -82,10 +83,11 @@ import GroundPlaneNodeEditor from '../components/properties/GroundPlaneNodeEdito
 import GroupNodeEditor from '../components/properties/GroupNodeEditor'
 import HemisphereLightNodeEditor from '../components/properties/HemisphereLightNodeEditor'
 import ImageNodeEditor from '../components/properties/ImageNodeEditor'
-import InstancingNodeEditor from '../components/properties/InstancingNodeEditor'
+import { InstancingNodeEditor } from '../components/properties/InstancingNodeEditor'
 import InteriorNodeEditor from '../components/properties/InteriorNodeEditor'
 import MediaNodeEditor from '../components/properties/MediaNodeEditor'
 import { MediaSettingsEditor } from '../components/properties/MediaSettingsEditor'
+import { MeshNodeEditor } from '../components/properties/MeshNodeEditor'
 import ModelNodeEditor from '../components/properties/ModelNodeEditor'
 import MountPointNodeEditor from '../components/properties/MountPointNodeEditor'
 import OceanNodeEditor from '../components/properties/OceanNodeEditor'
@@ -124,6 +126,7 @@ EntityNodeEditor.set(AmbientLightComponent, AmbientLightNodeEditor)
 EntityNodeEditor.set(PointLightComponent, PointLightNodeEditor)
 EntityNodeEditor.set(SpotLightComponent, SpotLightNodeEditor)
 EntityNodeEditor.set(GroundPlaneComponent, GroundPlaneNodeEditor)
+EntityNodeEditor.set(MeshComponent, MeshNodeEditor)
 EntityNodeEditor.set(ModelComponent, ModelNodeEditor)
 EntityNodeEditor.set(ParticleSystemComponent, ParticleSystemNodeEditor)
 EntityNodeEditor.set(PortalComponent, PortalNodeEditor)

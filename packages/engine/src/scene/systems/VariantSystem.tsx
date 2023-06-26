@@ -46,7 +46,9 @@ function execute() {
   if (engineState.elapsedSeconds - lastUpdate < updateFrequency) return
   lastUpdate = engineState.elapsedSeconds
 
-  modelVariantQuery().forEach(setModelVariant)
+  for (const entity of modelVariantQuery()) {
+    setModelVariant(entity)
+  }
 }
 
 function reactor() {

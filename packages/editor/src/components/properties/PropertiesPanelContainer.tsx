@@ -44,7 +44,6 @@ import { EditorState } from '../../services/EditorServices'
 import { SelectionState } from '../../services/SelectionServices'
 import MaterialEditor from '../materials/MaterialEditor'
 import { CoreNodeEditor } from './CoreNodeEditor'
-import Object3DNodeEditor from './Object3DNodeEditor'
 
 const StyledNodeEditor = styled.div``
 
@@ -111,13 +110,6 @@ export const PropertiesPanelContainer = () => {
 
   if (!nodeEntity || !node) {
     content = <NoNodeSelectedMessage>{t('editor:properties.noNodeSelected')}</NoNodeSelectedMessage>
-  } else if (isObject3D) {
-    content = (
-      <StyledNodeEditor>
-        {/* @todo these types are incorrect */}
-        <Object3DNodeEditor multiEdit={multiEdit} obj3d={node as Object3D} />
-      </StyledNodeEditor>
-    )
   } else if (isMaterial) {
     content = (
       <StyledNodeEditor>

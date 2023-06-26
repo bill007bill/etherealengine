@@ -1,3 +1,5 @@
+import { Mesh } from 'three'
+
 import { DistanceFromCameraComponent } from '@etherealengine/engine/src/transform/components/DistanceComponents'
 import { getState } from '@etherealengine/hyperflux'
 
@@ -6,6 +8,7 @@ import { Entity } from '../../../ecs/classes/Entity'
 import { getComponent, getMutableComponent } from '../../../ecs/functions/ComponentFunctions'
 import { TransformComponent } from '../../../transform/components/TransformComponent'
 import { isMobileXRHeadset } from '../../../xr/XRState'
+import { MeshComponent } from '../../components/MeshComponent'
 import { ModelComponent } from '../../components/ModelComponent'
 import { VariantComponent } from '../../components/VariantComponent'
 
@@ -58,5 +61,16 @@ export function setModelVariant(entity: Entity) {
       useLevel && modelComponent.src.value !== level.src && modelComponent.src.set(level.src)
       if (useLevel) break
     }
+  }
+}
+
+export function setMeshVariant(entity: Entity) {
+  const variantComponent = getComponent(entity, VariantComponent)
+  const meshComponent = getComponent(entity, MeshComponent) as Mesh
+
+  if (variantComponent.heuristic === 'DEVICE') {
+    const targetDevice = isMobileXRHeadset ? 'MOBILE' : 'DESKTOP'
+    //set model src to mobile variant src
+    const deviceVariant = variantComponent.levels.find((level) => level.metadata['device'] === targetDevice)
   }
 }

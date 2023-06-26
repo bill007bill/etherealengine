@@ -42,7 +42,8 @@ import {
 import { useEntityContext } from '../../ecs/functions/EntityFunctions'
 import { DistanceFromCameraComponent } from '../../transform/components/DistanceComponents'
 import { isMobileXRHeadset } from '../../xr/XRState'
-import { setModelVariant } from '../functions/loaders/VariantFunctions'
+import { setMeshVariant, setModelVariant } from '../functions/loaders/VariantFunctions'
+import { MeshComponent } from './MeshComponent'
 import { ModelComponent } from './ModelComponent'
 
 export type VariantLevel = {
@@ -126,5 +127,12 @@ const VariantLevelReactor = React.memo(({ entity, level }: { level: number; enti
   useEffect(() => {
     modelComponent && setModelVariant(entity)
   }, [variantLevel.src, variantLevel.metadata, modelComponent])
+
+  const meshComponent = useOptionalComponent(entity, MeshComponent)
+
+  useEffect(() => {
+    meshComponent && setMeshVariant(entity)
+  }, [variantLevel.src, variantLevel.metadata, meshComponent])
+
   return null
 })

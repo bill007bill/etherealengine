@@ -79,7 +79,7 @@ export function addObjectToGroup(entity: Entity, object: Object3D) {
 
   if (!hasComponent(entity, GroupComponent)) addComponent(entity, GroupComponent, [])
   if (getComponent(entity, GroupComponent).includes(obj)) return // console.warn('[addObjectToGroup]: Tried to add an object that is already included', entity, object)
-  if (!hasComponent(entity, TransformComponent)) setTransformComponent(entity)
+  if (!hasComponent(entity, TransformComponent)) setComponent(entity, TransformComponent)
 
   getMutableComponent(entity, GroupComponent).merge([obj])
   setComponent(entity, InputComponent)

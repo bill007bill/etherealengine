@@ -37,3 +37,13 @@ export default function getFirstMesh(obj3d: Object3D): Mesh | null {
   )
   return meshes.length > 0 ? meshes[0] : null
 }
+
+export function getMeshes(obj3d: Object3D): Mesh[] {
+  return iterateObject3D(
+    obj3d,
+    (child) => child,
+    (child: Mesh) => child?.isMesh,
+    false,
+    false
+  )
+}
