@@ -196,7 +196,7 @@ function ModelReactor() {
   useEffect(() => {
     const scene = modelComponent.scene.value
     if (!scene) return
-    enableObjectLayer(scene, ObjectLayers.Camera, model.avoidCameraOcclusion)
+    enableObjectLayer(scene, ObjectLayers.Camera, !model.avoidCameraOcclusion && model.generateBVH)
   }, [modelComponent.avoidCameraOcclusion, modelComponent.scene])
 
   // update scene
@@ -208,7 +208,7 @@ function ModelReactor() {
 
     //if (groupComponent?.value?.find((group: any) => group === scene)) return
     parseGLTFModel(entity)
-    setComponent(entity, BoundingBoxComponent)
+    // setComponent(entity, BoundingBoxComponent)
 
     let active = true
 
