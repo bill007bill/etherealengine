@@ -39,7 +39,7 @@ import { GroundPlaneComponent } from '@etherealengine/engine/src/scene/component
 import { GroupComponent } from '@etherealengine/engine/src/scene/components/GroupComponent'
 import { HemisphereLightComponent } from '@etherealengine/engine/src/scene/components/HemisphereLightComponent'
 import { ImageComponent } from '@etherealengine/engine/src/scene/components/ImageComponent'
-import { InstancingComponent } from '@etherealengine/engine/src/scene/components/InstancingComponent'
+// import { InstancingComponent } from '@etherealengine/engine/src/scene/components/InstancingComponent'
 import { InteriorComponent } from '@etherealengine/engine/src/scene/components/InteriorComponent'
 import { MediaComponent } from '@etherealengine/engine/src/scene/components/MediaComponent'
 import { MediaSettingsComponent } from '@etherealengine/engine/src/scene/components/MediaSettingsComponent'
@@ -69,7 +69,7 @@ import { ScenePrefabs } from '@etherealengine/engine/src/scene/systems/SceneObje
 import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 import { PersistentAnchorComponent } from '@etherealengine/engine/src/xr/XRAnchorComponents'
 
-import ChairIcon from '@mui/icons-material/Chair'
+// import ChairIcon from '@mui/icons-material/Chair'
 
 import AmbientLightNodeEditor from '../components/properties/AmbientLightNodeEditor'
 import { CameraPropertiesNodeEditor } from '../components/properties/CameraPropertiesNodeEditor'
@@ -133,7 +133,7 @@ EntityNodeEditor.set(PortalComponent, PortalNodeEditor)
 EntityNodeEditor.set(MountPointComponent, MountPointNodeEditor)
 EntityNodeEditor.set(ColliderComponent, ColliderNodeEditor)
 EntityNodeEditor.set(GroupComponent, GroupNodeEditor)
-EntityNodeEditor.set(PrefabComponent, PrefabNodeEditor)
+// EntityNodeEditor.set(PrefabComponent, PrefabNodeEditor)
 EntityNodeEditor.set(SceneTagComponent, SceneNodeEditor)
 EntityNodeEditor.set(ScenePreviewCameraComponent, ScenePreviewCameraNodeEditor)
 EntityNodeEditor.set(SkyboxComponent, SkyboxNodeEditor)
@@ -143,15 +143,15 @@ EntityNodeEditor.set(ImageComponent, ImageNodeEditor)
 EntityNodeEditor.set(PositionalAudioComponent, PositionalAudioNodeEditor)
 EntityNodeEditor.set(VideoComponent, VideoNodeEditor)
 EntityNodeEditor.set(VolumetricComponent, VolumetricNodeEditor)
-EntityNodeEditor.set(CloudComponent, CloudsNodeEditor)
-EntityNodeEditor.set(OceanComponent, OceanNodeEditor)
-EntityNodeEditor.set(WaterComponent, WaterNodeEditor)
-EntityNodeEditor.set(InteriorComponent, InteriorNodeEditor)
+// EntityNodeEditor.set(CloudComponent, CloudsNodeEditor)
+// EntityNodeEditor.set(OceanComponent, OceanNodeEditor)
+// EntityNodeEditor.set(WaterComponent, WaterNodeEditor)
+// EntityNodeEditor.set(InteriorComponent, InteriorNodeEditor)
 EntityNodeEditor.set(SystemComponent, SystemNodeEditor)
-EntityNodeEditor.set(SplineComponent, SplineNodeEditor)
+// EntityNodeEditor.set(SplineComponent, SplineNodeEditor)
 EntityNodeEditor.set(EnvmapComponent, EnvMapEditor)
 EntityNodeEditor.set(EnvMapBakeComponent, EnvMapBakeNodeEditor)
-EntityNodeEditor.set(InstancingComponent, InstancingNodeEditor)
+// EntityNodeEditor.set(InstancingComponent, InstancingNodeEditor)
 EntityNodeEditor.set(PersistentAnchorComponent, PersistentAnchorNodeEditor)
 EntityNodeEditor.set(VariantComponent, VariantNodeEditor)
 
@@ -167,23 +167,23 @@ export const prefabIcons = {
   [ScenePrefabs.particleEmitter]: ParticleSystemNodeEditor.iconComponent,
   [ScenePrefabs.portal]: PortalNodeEditor.iconComponent,
   [PhysicsPrefabs.collider]: ColliderNodeEditor.iconComponent,
-  [ScenePrefabs.chair]: ChairIcon,
+  // [ScenePrefabs.chair]: ChairIcon,
   [ScenePrefabs.group]: GroupNodeEditor.iconComponent,
-  [ScenePrefabs.prefab]: InteriorNodeEditor.iconComponent,
+  // [ScenePrefabs.prefab]: PrefabNodeEditor.iconComponent,
   [ScenePrefabs.skybox]: SkyboxNodeEditor.iconComponent,
   [ScenePrefabs.spawnPoint]: SpawnPointNodeEditor.iconComponent,
   [ScenePrefabs.image]: ImageNodeEditor.iconComponent,
   [MediaPrefabs.audio]: PositionalAudioNodeEditor.iconComponent,
   [MediaPrefabs.video]: VideoNodeEditor.iconComponent,
   [MediaPrefabs.volumetric]: VolumetricNodeEditor.iconComponent,
-  [ScenePrefabs.cloud]: CloudsNodeEditor.iconComponent,
-  [ScenePrefabs.ocean]: OceanNodeEditor.iconComponent,
-  [ScenePrefabs.water]: WaterNodeEditor.iconComponent,
-  [ScenePrefabs.interior]: InteriorNodeEditor.iconComponent,
+  // [ScenePrefabs.cloud]: CloudsNodeEditor.iconComponent,
+  // [ScenePrefabs.ocean]: OceanNodeEditor.iconComponent,
+  // [ScenePrefabs.water]: WaterNodeEditor.iconComponent,
+  // [ScenePrefabs.interior]: InteriorNodeEditor.iconComponent,
   [ScenePrefabs.system]: SystemNodeEditor.iconComponent,
-  [ScenePrefabs.spline]: SplineNodeEditor.iconComponent,
-  [ScenePrefabs.instancing]: InstancingNodeEditor.iconComponent,
-  [ScenePrefabs.envMapbake]: EnvMapBakeNodeEditor.iconComponent,
-  [ScenePrefabs.behaveGraph]: ChairIcon,
-  [ScenePrefabs.loadVolume]: ChairIcon
+  // [ScenePrefabs.spline]: SplineNodeEditor.iconComponent,
+  // [ScenePrefabs.instancing]: InstancingNodeEditor.iconComponent,
+  [ScenePrefabs.envMapbake]: EnvMapBakeNodeEditor.iconComponent
+  // [ScenePrefabs.behaveGraph]: ChairIcon,
+  // [ScenePrefabs.loadVolume]: ChairIcon
 }
