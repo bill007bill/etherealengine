@@ -27,14 +27,20 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Entity } from '@etherealengine/engine/src/ecs/classes/Entity'
+import { useComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
+import { InstancingComponent } from '@etherealengine/engine/src/scene/components/InstancingComponent'
 
 import { ScatterPlot } from '@mui/icons-material'
 
+import PaginatedList from '../layout/PaginatedList'
 import NodeEditor from './NodeEditor'
 import { EditorComponentType } from './Util'
 
 export const InstancingNodeEditor: EditorComponentType = (props: { entity: Entity }) => {
   const { t } = useTranslation()
+  const entity = props.entity
+
+  const instancingComponent = useComponent(entity, InstancingComponent)
 
   return (
     <NodeEditor

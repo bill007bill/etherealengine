@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next'
 import { useComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
 import { VolumetricComponent } from '@etherealengine/engine/src/scene/components/VolumetricComponent'
 
-import VideocamIcon from '@mui/icons-material/Videocam'
+import { VideocamOutlined } from '@mui/icons-material'
 
 import BooleanInput from '../inputs/BooleanInput'
 import InputGroup from '../inputs/InputGroup'
@@ -64,6 +64,6 @@ export const VolumetricNodeEditor: EditorComponentType = (props) => {
 }
 
 //setting iconComponent with icon name
-VolumetricNodeEditor.iconComponent = VideocamIcon
+VolumetricNodeEditor.iconComponent = VideocamOutlined
 
 export default VolumetricNodeEditor

@@ -23,7 +23,7 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { AnimationMixer, Mesh, Object3D } from 'three'
+import { AnimationMixer, InstancedMesh, Mesh, Object3D } from 'three'
 
 import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
 
@@ -47,6 +47,7 @@ import {
 import { computeLocalTransformMatrix, computeTransformMatrix } from '../../transform/systems/TransformSystem'
 import { GLTFLoadedComponent } from '../components/GLTFLoadedComponent'
 import { addObjectToGroup, GroupComponent, Object3DWithEntity } from '../components/GroupComponent'
+import { InstancingComponent } from '../components/InstancingComponent'
 import { MeshComponent } from '../components/MeshComponent'
 import { ModelComponent } from '../components/ModelComponent'
 import { NameComponent } from '../components/NameComponent'
@@ -178,6 +179,10 @@ export const parseGLTFModel = (entity: Entity) => {
     const mesh = obj as Mesh
     if (mesh.isMesh) {
       setComponent(objEntity, MeshComponent, mesh)
+    }
+    const instancedMesh = obj as InstancedMesh
+    if (instancedMesh.isInstancedMesh) {
+      setComponent(objEntity, InstancingComponent, instancedMesh)
     }
   })
 
