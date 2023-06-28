@@ -87,7 +87,6 @@ export const parseECSData = (entity: Entity, data: [string, any][]): void => {
       console.warn(`Could not load component '${key}'`)
     } else {
       setComponent(entity, component, value)
-      getComponent(entity, GLTFLoadedComponent).push(component)
     }
   }
 
@@ -96,7 +95,6 @@ export const parseECSData = (entity: Entity, data: [string, any][]): void => {
     if (typeof component === 'undefined') {
       console.warn(`Could not load component '${component}'`)
     } else {
-      getComponent(entity, GLTFLoadedComponent).push(component)
       deserializeComponent(entity, {
         name: key,
         props: value
@@ -176,14 +174,14 @@ export const parseGLTFModel = (entity: Entity) => {
     setComponent(objEntity, VisibleComponent, true)
     setComponent(objEntity, GLTFLoadedComponent, ['entity'])
     createObjectEntityFromGLTF(objEntity, obj)
+
     const mesh = obj as Mesh
-    if (mesh.isMesh) {
-      setComponent(objEntity, MeshComponent, mesh)
-    }
+    mesh.isMesh && setComponent(objEntity, MeshComponent, mesh)
+
     const instancedMesh = obj as InstancedMesh
-    if (instancedMesh.isInstancedMesh) {
-      setComponent(objEntity, InstancingComponent, instancedMesh)
-    }
+    instancedMesh.isInstancedMesh && setComponent(objEntity, InstancingComponent, instancedMesh)
+
+    obj.userData.ecsData && parseECSData(objEntity, obj.userData.ecsData)
   })
 
   //parseObjectComponentsFromGLTF(entity, scene)

@@ -47,18 +47,9 @@ export default class EEECSImporterExtension extends ImporterExtension implements
       const extensionDef: EE_ecs = nodeDef.extensions[this.name]
       const containsECSData = !!extensionDef.data && extensionDef.data.some(([k]) => k.startsWith('xrengine.'))
       if (!containsECSData) continue
-      const entity = createEntity()
       !nodeDef.extras && (nodeDef.extras = {})
-      nodeDef.extras.entity = entity
-      parseECSData(entity, extensionDef.data)
+      nodeDef.extras.ecsData = extensionDef.data
     }
-    return null
-  }
-
-  afterRoot(result: GLTF) {
-    iterateObject3D(result.scene, (obj) => {
-      obj.userData['entity'] && ((obj as Object3DWithEntity).entity = obj.userData['entity'])
-    })
     return null
   }
 }

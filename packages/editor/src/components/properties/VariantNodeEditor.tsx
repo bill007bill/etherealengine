@@ -104,7 +104,8 @@ export const VariantNodeEditor: EditorComponentType = (props: { entity: Entity }
                           onChange={onChangeLevelProperty(level.metadata, 'device')}
                           options={[
                             { value: 'MOBILE', label: t('editor:properties.variant.device-mobile') },
-                            { value: 'DESKTOP', label: t('editor:properties.variant.device-desktop') }
+                            { value: 'DESKTOP', label: t('editor:properties.variant.device-desktop') },
+                            { value: 'XR', label: t('editor:properties.variant.device-xr') }
                           ]}
                         />
                       </InputGroup>
