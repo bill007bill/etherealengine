@@ -171,6 +171,12 @@
       "lbl-volume": "Volume",
       "lbl-isMusic": "Is Music"
     },
+    "mesh": {
+      "name": "Mesh",
+      "description": "A mesh is a collection of vertices, edges, and faces that describe the shape of a 3D object.",
+      "geometryEditor": "Geometry Editor",
+      "materialEditor": "Material Editor"
+    },
     "audio": {
       "name": "Positional Audio",
       "description": "Positional audio settings",
