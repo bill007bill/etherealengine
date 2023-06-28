@@ -29,6 +29,7 @@ import { ComponentJson } from '@etherealengine/common/src/interfaces/SceneInterf
 
 import {
   ComponentMap,
+  getAllComponents,
   getComponent,
   getMutableComponent,
   hasComponent
@@ -48,9 +49,11 @@ export class EEECSExporterExtension extends ExporterExtension implements GLTFExp
     if (!object.entity) return
     const entity = object.entity
     if (!hasComponent(entity, GLTFLoadedComponent)) return
-    const gltfLoaded = getComponent(entity, GLTFLoadedComponent)
+    //const gltfLoaded = getComponent(entity, GLTFLoadedComponent)
+    const components = getAllComponents(entity)
     const data = new Array<[string, any]>()
-    for (const field of gltfLoaded) {
+    for (const component of components) {
+      const field = ''
       if (field === 'entity') {
         const name = getComponent(entity, NameComponent)
         data.push(['xrengine.entity', name])
