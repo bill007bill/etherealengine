@@ -160,7 +160,7 @@ export const parseGLTFModel = (entity: Entity) => {
   // always parse components first
   iterateObject3D(scene, (obj) => {
     if (obj === scene) return
-    const objEntity = createEntity()
+    const objEntity = (obj as Object3DWithEntity).entity ?? createEntity()
     const parentEntity = obj === scene ? entity : (obj.parent as Object3DWithEntity).entity
     addEntityNodeChild(objEntity, parentEntity, obj.uuid as EntityUUID)
     setComponent(objEntity, LocalTransformComponent, {

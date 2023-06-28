@@ -181,6 +181,10 @@ function ModelReactor() {
                   totalAmount: onprogress.total
                 }
               })
+            },
+            (err) => {
+              if (!entityExists(entity)) return
+              throw err
             }
           )
           break

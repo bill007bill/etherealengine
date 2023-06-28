@@ -67,7 +67,7 @@ export class EEECSExporterExtension extends ExporterExtension implements GLTFExp
       }
     }
     nodeDef.extensions = nodeDef.extensions ?? {}
-    nodeDef.extensions[this.name] = { data }
+    nodeDef.extensions[this.name] = { data } as EE_ecs
     this.writer.extensionsUsed[this.name] = true
   }
 }

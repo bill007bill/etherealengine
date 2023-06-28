@@ -63,6 +63,7 @@ export class EEMaterialImporterExtension extends ImporterExtension implements GL
     const materialDef = parser.json.materials[materialIndex]
     if (!materialDef.extensions?.[this.name]) return Promise.resolve()
     const extension: EEMaterialExtensionType = materialDef.extensions[this.name]
+    !materialDef.extras && (materialDef.extras = {})
     extension.plugins && (materialDef.extras['plugins'] = extension.plugins)
     const defaultArgs = getState(MaterialLibraryState).materials[extension.uuid]
       ? materialIdToDefaultArgs(extension.uuid)!
