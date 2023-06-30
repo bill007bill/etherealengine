@@ -155,36 +155,45 @@ export const parseGLTFModel = (entity: Entity) => {
   if (!model.scene) return
   const scene = model.scene
   scene.updateMatrixWorld(true)
+
+  //run the old ecs parsing to preserve backward compatibility
+  parseObjectComponentsFromGLTF(entity, scene)
+
   // always parse components first
-  iterateObject3D(scene, (obj) => {
-    if (obj === scene) return
-    const objEntity = (obj as Object3DWithEntity).entity ?? createEntity()
-    const parentEntity = obj === scene ? entity : (obj.parent as Object3DWithEntity).entity
-    addEntityNodeChild(objEntity, parentEntity, obj.uuid as EntityUUID)
-    setComponent(objEntity, LocalTransformComponent, {
-      position: obj.position,
-      rotation: obj.quaternion,
-      scale: obj.scale,
-      parentEntity
-    })
-    hasComponent(parentEntity, LocalTransformComponent) && computeLocalTransformMatrix(parentEntity)
-    computeTransformMatrix(parentEntity)
-    setComponent(objEntity, NameComponent, obj.userData['xrengine.entity'] ?? obj.name)
-    addObjectToGroup(objEntity, obj)
-    setComponent(objEntity, VisibleComponent, true)
-    setComponent(objEntity, GLTFLoadedComponent, ['entity'])
-    createObjectEntityFromGLTF(objEntity, obj)
+  iterateObject3D(
+    scene,
+    (obj) => {
+      if (obj === scene) return
+      const objEntity = (obj as Object3DWithEntity).entity ?? createEntity()
+      const parentEntity = obj === scene ? entity : (obj.parent as Object3DWithEntity).entity
+      addEntityNodeChild(objEntity, parentEntity, obj.uuid as EntityUUID)
+      setComponent(objEntity, LocalTransformComponent, {
+        position: obj.position,
+        rotation: obj.quaternion,
+        scale: obj.scale,
+        parentEntity
+      })
+      hasComponent(parentEntity, LocalTransformComponent) && computeLocalTransformMatrix(parentEntity)
+      computeTransformMatrix(parentEntity)
+      setComponent(objEntity, NameComponent, obj.userData['xrengine.entity'] ?? obj.name)
+      addObjectToGroup(objEntity, obj)
+      setComponent(objEntity, VisibleComponent, true)
+      setComponent(objEntity, GLTFLoadedComponent, ['entity'])
+      createObjectEntityFromGLTF(objEntity, obj)
 
-    const mesh = obj as Mesh
-    mesh.isMesh && setComponent(objEntity, MeshComponent, mesh)
+      const mesh = obj as Mesh
+      mesh.isMesh && setComponent(objEntity, MeshComponent, mesh)
 
-    const instancedMesh = obj as InstancedMesh
-    instancedMesh.isInstancedMesh && setComponent(objEntity, InstancingComponent, instancedMesh)
+      const instancedMesh = obj as InstancedMesh
+      instancedMesh.isInstancedMesh &&
+        setComponent(objEntity, InstancingComponent, {
+          instanceMatrix: instancedMesh.instanceMatrix
+        })
 
-    obj.userData.ecsData && parseECSData(objEntity, obj.userData.ecsData)
-  })
-
-  //parseObjectComponentsFromGLTF(entity, scene)
+      obj.userData.ecsData && parseECSData(objEntity, obj.userData.ecsData)
+    },
+    (obj) => !obj.userData['xrengine.entity'] //ignore objects with old ecs schema as they have already been processed
+  )
 
   enableObjectLayer(scene, ObjectLayers.Scene, true)
 

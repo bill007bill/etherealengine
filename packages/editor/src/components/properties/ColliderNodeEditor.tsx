@@ -196,6 +196,9 @@ export const ColliderNodeEditor: EditorComponentType = (props) => {
           onChange={updateProperty(ColliderComponent, 'shapeType')}
         />
       </InputGroup>
+      <InputGroup name="Remove Mesh" label={t('editor:properties.collider.lbl-removeMesh')}>
+        <BooleanInput value={colliderComponent.removeMesh} onChange={updateProperty(ColliderComponent, 'removeMesh')} />
+      </InputGroup>
       <InputGroup name="Trigger" label={t('editor:properties.collider.lbl-isTrigger')}>
         <BooleanInput value={colliderComponent.isTrigger} onChange={updateIsTrigger} />
       </InputGroup>

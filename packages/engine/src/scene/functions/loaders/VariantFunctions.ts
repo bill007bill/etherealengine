@@ -1,18 +1,22 @@
-import { Mesh } from 'three'
+import { InstancedMesh, Material, Mesh, Vector3 } from 'three'
 
 import { DistanceFromCameraComponent } from '@etherealengine/engine/src/transform/components/DistanceComponents'
 import { getState } from '@etherealengine/hyperflux'
 
 import { AssetLoader } from '../../../assets/classes/AssetLoader'
 import { isMobile } from '../../../common/functions/isMobile'
+import { addOBCPlugin } from '../../../common/functions/OnBeforeCompilePlugin'
+import { Engine } from '../../../ecs/classes/Engine'
 import { EngineState } from '../../../ecs/classes/EngineState'
 import { Entity } from '../../../ecs/classes/Entity'
 import { getComponent, getMutableComponent } from '../../../ecs/functions/ComponentFunctions'
 import { TransformComponent } from '../../../transform/components/TransformComponent'
 import { isMobileXRHeadset } from '../../../xr/XRState'
+import { addObjectToGroup, GroupComponent, removeObjectFromGroup } from '../../components/GroupComponent'
+import { InstancingComponent } from '../../components/InstancingComponent'
 import { MeshComponent } from '../../components/MeshComponent'
 import { ModelComponent } from '../../components/ModelComponent'
-import { VariantComponent } from '../../components/VariantComponent'
+import { VariantComponent, VariantLevel } from '../../components/VariantComponent'
 import getFirstMesh from '../../util/meshUtils'
 
 /*
@@ -82,5 +86,122 @@ export function setMeshVariant(entity: Entity) {
       meshComponent.geometry = mesh.geometry
       meshComponent.material = mesh.material
     })
+  }
+}
+
+export function setInstancedMeshVariant(entity: Entity) {
+  const variantComponent = getComponent(entity, VariantComponent)
+  const meshComponent = getComponent(entity, MeshComponent) as Mesh
+  const instancingComponent = getComponent(entity, InstancingComponent)
+  const transformComponent = getComponent(entity, TransformComponent)
+  if (variantComponent.heuristic === 'DEVICE') {
+    const targetDevice = isMobileXRHeadset ? 'XR' : isMobile ? 'MOBILE' : 'DESKTOP'
+    //set model src to mobile variant src
+    const deviceVariant = variantComponent.levels.find((level) => level.metadata['device'] === targetDevice)
+    if (!deviceVariant) return
+    AssetLoader.load(deviceVariant.src, {}, (gltf) => {
+      const mesh = getFirstMesh(gltf.scene)
+      if (!mesh) return
+      meshComponent.geometry = mesh.geometry
+      meshComponent.material = mesh.material
+    })
+  } else if (variantComponent.heuristic === 'DISTANCE') {
+    const referencedVariants: VariantLevel[] = []
+    const variantIndices: number[] = []
+    const cameraPosition = Engine.instance.camera.position
+    const position = new Vector3()
+    for (let i = 0; i < instancingComponent.instanceMatrix.count; i++) {
+      //for each level, check if distance is in range
+      position.set(
+        instancingComponent.instanceMatrix.array[i * 16 + 12],
+        instancingComponent.instanceMatrix.array[i * 16 + 13],
+        instancingComponent.instanceMatrix.array[i * 16 + 14]
+      )
+      position.add(transformComponent.position)
+      const distanceSq = cameraPosition.distanceToSquared(position)
+      for (let j = 0; j < variantComponent.levels.length; j++) {
+        const level = variantComponent.levels[j]
+        const minDistance = Math.pow(level.metadata['minDistance'], 2)
+        const maxDistance = Math.pow(level.metadata['maxDistance'], 2)
+        const useLevel = minDistance <= distanceSq && distanceSq <= maxDistance
+        if (useLevel) {
+          if (!referencedVariants.includes(level)) {
+            referencedVariants.push(level)
+            variantIndices.push(j)
+          }
+        }
+      }
+    }
+    const group = getComponent(entity, GroupComponent)
+    const loadedVariants: VariantLevel[] = []
+    //for levels in range, check if already loaded
+    for (let i = 0; i < group.length; i++) {
+      const loadedElement = group[i]
+      if (!loadedElement.userData['variant']) continue
+      const elementVariantData = loadedElement.userData['variant']
+      const loadedVariant = referencedVariants.find(
+        (variant, index) =>
+          //if already loaded, check that the src and index are the same
+          variant.src === elementVariantData.src && variantIndices[index] === elementVariantData.index
+      )
+      if (loadedVariant) {
+        loadedVariants.push(loadedVariant)
+        continue
+      }
+      //if not referenced or src is different, remove from group
+      removeObjectFromGroup(entity, loadedElement)
+    }
+    for (let i = 0; i < referencedVariants.length; i++) {
+      const referencedVariant = referencedVariants[i]
+      if (loadedVariants.includes(referencedVariant)) continue //already loaded
+      //if not already loaded, load src
+      AssetLoader.load(referencedVariant.src, {}, (gltf) => {
+        const minDistance = referencedVariant.metadata['minDistance']
+        const maxDistance = referencedVariant.metadata['maxDistance']
+        const mesh = getFirstMesh(gltf.scene)
+        if (!mesh) return
+        //convert to instanced mesh, using existing instance matrix
+        const instancedMesh =
+          mesh instanceof InstancedMesh
+            ? mesh
+            : new InstancedMesh(mesh.geometry, mesh.material, instancingComponent.instanceMatrix.count)
+        instancedMesh.instanceMatrix = instancingComponent.instanceMatrix
+        instancedMesh.frustumCulled = false
+
+        //add distance culling shader plugin
+        const materials: Material[] = Array.isArray(instancedMesh.material)
+          ? instancedMesh.material
+          : [instancedMesh.material]
+        for (const material of materials) {
+          addOBCPlugin(material, {
+            id: 'lod-culling',
+            priority: 1,
+            compile: (shader, renderer) => {
+              shader.fragmentShader = shader.fragmentShader.replace(
+                'void main() {\n',
+                `
+      void main() {
+        float maxDistance = ${maxDistance.toFixed(1)};
+        float minDistance = ${minDistance.toFixed(1)};
+        // Calculate the camera distance from the geometry
+        float cameraDistance = length(vViewPosition);
+        // Discard fragments outside the minDistance and maxDistance range
+        if (cameraDistance <= minDistance || cameraDistance >= maxDistance) {
+          discard;
+        }
+    `
+              )
+            }
+          })
+        }
+        //add variant metadata to mesh
+        instancedMesh.userData['variant'] = {
+          src: referencedVariant.src,
+          index: variantIndices[i]
+        }
+        //add to group
+        addObjectToGroup(entity, instancedMesh)
+      })
+    }
   }
 }

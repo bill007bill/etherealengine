@@ -30,19 +30,17 @@ import matches from 'ts-matches'
 import { Entity } from '../../ecs/classes/Entity'
 import {
   defineComponent,
-  getComponent,
-  getMutableComponent,
+  getOptionalComponent,
   hasComponent,
   removeComponent,
   setComponent,
   useComponent,
-  useOptionalComponent,
-  useQuery
+  useOptionalComponent
 } from '../../ecs/functions/ComponentFunctions'
 import { useEntityContext } from '../../ecs/functions/EntityFunctions'
 import { DistanceFromCameraComponent } from '../../transform/components/DistanceComponents'
-import { isMobileXRHeadset } from '../../xr/XRState'
-import { setMeshVariant, setModelVariant } from '../functions/loaders/VariantFunctions'
+import { setInstancedMeshVariant, setMeshVariant, setModelVariant } from '../functions/loaders/VariantFunctions'
+import { InstancingComponent } from './InstancingComponent'
 import { MeshComponent } from './MeshComponent'
 import { ModelComponent } from './ModelComponent'
 
@@ -129,9 +127,11 @@ const VariantLevelReactor = React.memo(({ entity, level }: { level: number; enti
   }, [variantLevel.src, variantLevel.metadata, modelComponent])
 
   const meshComponent = useOptionalComponent(entity, MeshComponent)
+  const instancingComponent = getOptionalComponent(entity, InstancingComponent)
 
   useEffect(() => {
-    meshComponent && setMeshVariant(entity)
+    meshComponent && !instancingComponent && setMeshVariant(entity)
+    meshComponent && instancingComponent && setInstancedMeshVariant(entity)
   }, [variantLevel.src, variantLevel.metadata, meshComponent])
 
   return null

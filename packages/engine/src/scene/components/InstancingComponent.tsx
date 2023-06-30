@@ -23,14 +23,9 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import React, { useEffect } from 'react'
-import { InstancedBufferAttribute, InstancedMesh } from 'three'
+import { InstancedBufferAttribute } from 'three'
 
-import { defineComponent, useComponent, useOptionalComponent } from '../../ecs/functions/ComponentFunctions'
-import { useEntityContext } from '../../ecs/functions/EntityFunctions'
-import { getMeshes } from '../util/meshUtils'
-import { MeshComponent } from './MeshComponent'
-import { ModelComponent } from './ModelComponent'
+import { defineComponent } from '../../ecs/functions/ComponentFunctions'
 
 export const InstancingComponent = defineComponent({
   name: 'EE_instancing',
@@ -40,20 +35,10 @@ export const InstancingComponent = defineComponent({
   }),
   onSet: (entity, component, json) => {
     if (!json) return
-    if (Array.isArray(json.instanceMatrix)) {
+    if (json.instanceMatrix instanceof InstancedBufferAttribute) {
+      component.instanceMatrix.set(json.instanceMatrix)
+    } else if (Array.isArray(json.instanceMatrix)) {
       component.instanceMatrix.value.set(json.instanceMatrix)
     }
-  },
-  toJSON: (entity, component) => ({
-    instanceMatrix: component.instanceMatrix.value.array
-  }),
-  reactor: InstancingReactor
+  }
 })
-
-function InstancingReactor() {
-  const entity = useEntityContext()
-  const instancingComponent = useComponent(entity, InstancingComponent)
-  const meshComponent = useComponent(entity, MeshComponent)
-
-  return null
-}
