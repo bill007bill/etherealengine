@@ -1,4 +1,4 @@
-import { InstancedMesh, Material, Mesh, Vector3 } from 'three'
+import { InstancedMesh, Material, Mesh, Object3D, Vector3 } from 'three'
 
 import { DistanceFromCameraComponent } from '@etherealengine/engine/src/transform/components/DistanceComponents'
 import { getState } from '@etherealengine/hyperflux'
@@ -117,7 +117,7 @@ export function setInstancedMeshVariant(entity: Entity) {
         instancingComponent.instanceMatrix.array[i * 16 + 13],
         instancingComponent.instanceMatrix.array[i * 16 + 14]
       )
-      position.add(transformComponent.position)
+      position.applyMatrix4(transformComponent.matrix)
       const distanceSq = cameraPosition.distanceToSquared(position)
       for (let j = 0; j < variantComponent.levels.length; j++) {
         const level = variantComponent.levels[j]
@@ -155,6 +155,10 @@ export function setInstancedMeshVariant(entity: Entity) {
       const referencedVariant = referencedVariants[i]
       if (loadedVariants.includes(referencedVariant)) continue //already loaded
       //if not already loaded, load src
+      //add a placeholder element with src and index to group until actual variant loads
+      const placeholder = new Object3D()
+      placeholder.userData['variant'] = { src: referencedVariant.src, index: variantIndices[i] }
+      addObjectToGroup(entity, placeholder)
       AssetLoader.load(referencedVariant.src, {}, (gltf) => {
         const minDistance = referencedVariant.metadata['minDistance']
         const maxDistance = referencedVariant.metadata['maxDistance']
@@ -199,6 +203,8 @@ export function setInstancedMeshVariant(entity: Entity) {
           src: referencedVariant.src,
           index: variantIndices[i]
         }
+        //remove placeholder
+        removeObjectFromGroup(entity, placeholder)
         //add to group
         addObjectToGroup(entity, instancedMesh)
       })

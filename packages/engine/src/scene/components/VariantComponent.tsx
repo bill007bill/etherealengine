@@ -25,6 +25,7 @@ Ethereal Engine. All Rights Reserved.
 
 import { ReactElement, useEffect } from 'react'
 import React from 'react'
+import { Mesh } from 'three'
 import matches from 'ts-matches'
 
 import { Entity } from '../../ecs/classes/Entity'
@@ -94,6 +95,14 @@ export const VariantComponent = defineComponent({
 function VariantReactor(): ReactElement {
   const entity = useEntityContext()
   const variantComponent = useComponent(entity, VariantComponent)
+
+  const meshComponent = getOptionalComponent(entity, MeshComponent) as Mesh | null
+
+  useEffect(() => {
+    if (variantComponent.heuristic.value === 'DISTANCE' && meshComponent) {
+      meshComponent.removeFromParent()
+    }
+  }, [meshComponent])
 
   return (
     <>

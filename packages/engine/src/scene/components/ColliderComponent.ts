@@ -42,6 +42,7 @@ import {
   useOptionalComponent
 } from '../../ecs/functions/ComponentFunctions'
 import { useEntityContext } from '../../ecs/functions/EntityFunctions'
+import { iterateEntityNode } from '../../ecs/functions/EntityTree'
 import { Physics } from '../../physics/classes/Physics'
 import { RigidBodyComponent } from '../../physics/components/RigidBodyComponent'
 import { CollisionGroups, DefaultCollisionMask } from '../../physics/enums/CollisionGroups'
@@ -161,6 +162,7 @@ export const ColliderComponent = defineComponent({
         }
 
         computeTransformMatrix(entity)
+        iterateEntityNode(entity, computeTransformMatrix)
         if (hasComponent(entity, GroupComponent)) {
           updateGroupChildren(entity)
         }
@@ -249,7 +251,7 @@ export const ColliderComponent = defineComponent({
       }
 
       if (hasComponent(entity, SceneAssetPendingTagComponent)) removeComponent(entity, SceneAssetPendingTagComponent)
-    }, [isLoadedFromGLTF, transformComponent, colliderComponent, groupComponent?.length, colliderComponent.removeMesh])
+    }, [isLoadedFromGLTF, transformComponent, colliderComponent, groupComponent?.length])
 
     return null
   }

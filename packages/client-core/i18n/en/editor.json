@@ -201,7 +201,10 @@
     },
     "collider": {
       "description": "An invisible box that objects will bounce off of or rest on top of.\nWithout colliders, objects will fall through floors and go through walls.",
-      "lbl-isTrigger": "Trigger"
+      "lbl-isTrigger": "Trigger",
+      "lbl-removeMesh": "Remove Mesh",
+      "lbl-shape": "Shape",
+      "lbl-type": "Body Type"
     },
     "camera": {
       "name": "Camera",
@@ -267,6 +270,7 @@
       "lbl-usingGPUInstancingFlag": "Use GPU Instancing",
       "lbl-modelurl": "Model Url",
       "lbl-envmapUrl": "Environment Map Url",
+      "lbl-exportType": "File Extension",
       "lbl-textureOverride": "Override Texture",
       "lbl-materialOverride": "Material Overrides",
       "error-url": "Error Loading From URL",
