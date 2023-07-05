@@ -361,7 +361,7 @@
     "image": {
       "name": "Image",
       "description": "Dynamically loads an image.",
-      "lbl-imgURL": "Image Url",
+      "lbl-imgURL": "Image URL",
       "lbl-transparency": "Transparency Mode",
       "lbl-alphaCutoff": "Alpha Cutoff",
       "lbl-projection": "Projection",
@@ -376,7 +376,7 @@
     },
     "screenshare": {
       "name": "Screenshare Target",
-      "description": "Allows this object to be a target for screeshare projection."
+      "description": "Allows this object to be a target for screen-share projection."
     },
     "name": {
       "lbl-name": "Name"
@@ -646,7 +646,7 @@
     "portal": {
       "lbl-portal": "Linked Portal",
       "lbl-redirect": "Use Page Redirect",
-      "description": "A Portat to teleport players to specified location",
+      "description": "A Portal to teleport players to specified location",
       "lbl-locationName": "Location",
       "lbl-modelUrl": "Model URL",
       "lbl-displayText": "Display Text",
