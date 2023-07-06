@@ -36,13 +36,6 @@ import { SimulationSystemGroup } from '../../../ecs/functions/EngineFunctions'
 import { createEntity } from '../../../ecs/functions/EntityFunctions'
 import { defineSystem, startSystem, SystemDefinitions, SystemUUID } from '../../../ecs/functions/SystemFunctions'
 import { createEngine } from '../../../initializeEngine'
-import {
-  GrassProperties,
-  SampleMode,
-  ScatterMode,
-  ScatterProperties,
-  ScatterState
-} from '../../components/InstancingComponent'
 import { GRASS_PROPERTIES_DEFAULT_VALUES, SCATTER_PROPERTIES_DEFAULT_VALUES } from './InstancingFunctions'
 
 describe('InstancingFunctions', async () => {
@@ -78,47 +71,4 @@ describe('InstancingFunctions', async () => {
     sandbox.restore()
     return destroyEngine()
   })
-
-  const scatterProps: ScatterProperties = {
-    ...SCATTER_PROPERTIES_DEFAULT_VALUES,
-    densityMap: {
-      src: '',
-      texture: null
-    },
-    heightMap: {
-      src: '',
-      texture: null
-    }
-  }
-
-  const grassProps: GrassProperties = {
-    ...GRASS_PROPERTIES_DEFAULT_VALUES,
-    grassTexture: {
-      src: '',
-      texture: null
-    },
-    alphaMap: {
-      src: '',
-      texture: null
-    },
-    sunColor: new Color(1, 1, 1)
-  }
-
-  const emptyInstancingCmp = {
-    count: 0,
-    surface: '',
-    sampling: SampleMode.SCATTER,
-    mode: ScatterMode.GRASS,
-    state: ScatterState.UNSTAGED,
-    sampleProperties: scatterProps,
-    sourceProperties: grassProps
-  }
-
-  describe('deserializeInstancing', () => {})
-
-  describe('stageInstancing', () => {})
-
-  describe('unstageInstancing', () => {})
-
-  describe('serializeInstancing', () => {})
 })
