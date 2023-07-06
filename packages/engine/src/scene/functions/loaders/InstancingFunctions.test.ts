@@ -36,7 +36,6 @@ import { SimulationSystemGroup } from '../../../ecs/functions/EngineFunctions'
 import { createEntity } from '../../../ecs/functions/EntityFunctions'
 import { defineSystem, startSystem, SystemDefinitions, SystemUUID } from '../../../ecs/functions/SystemFunctions'
 import { createEngine } from '../../../initializeEngine'
-import { GRASS_PROPERTIES_DEFAULT_VALUES, SCATTER_PROPERTIES_DEFAULT_VALUES } from './InstancingFunctions'
 
 describe('InstancingFunctions', async () => {
   let entity: Entity
