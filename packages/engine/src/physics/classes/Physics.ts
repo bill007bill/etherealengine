@@ -334,7 +334,7 @@ function createRigidBodyForGroup(
   }
 
   iterateEntityNode(entity, (child) => {
-    const mesh = getComponent(child, MeshComponent) as Mesh | null
+    const mesh = getComponent(child, MeshComponent)
     if (!mesh) return // || ((mesh?.geometry.attributes['position'] as BufferAttribute).array.length ?? 0 === 0)) return
     if (mesh.userData.type && mesh.userData.type !== ('glb' as any)) mesh.userData.shapeType = mesh.userData.type
 

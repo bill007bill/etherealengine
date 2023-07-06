@@ -96,7 +96,7 @@ function VariantReactor(): ReactElement {
   const entity = useEntityContext()
   const variantComponent = useComponent(entity, VariantComponent)
 
-  const meshComponent = getOptionalComponent(entity, MeshComponent) as Mesh | null
+  const meshComponent = getOptionalComponent(entity, MeshComponent)
 
   useEffect(() => {
     if (variantComponent.heuristic.value === 'DISTANCE' && meshComponent) {

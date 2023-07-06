@@ -73,7 +73,7 @@ export function setModelVariant(entity: Entity) {
 
 export function setMeshVariant(entity: Entity) {
   const variantComponent = getComponent(entity, VariantComponent)
-  const meshComponent = getComponent(entity, MeshComponent) as Mesh
+  const meshComponent = getComponent(entity, MeshComponent)
 
   if (variantComponent.heuristic === 'DEVICE') {
     const targetDevice = isMobileXRHeadset ? 'XR' : isMobile ? 'MOBILE' : 'DESKTOP'
@@ -91,7 +91,7 @@ export function setMeshVariant(entity: Entity) {
 
 export function setInstancedMeshVariant(entity: Entity) {
   const variantComponent = getComponent(entity, VariantComponent)
-  const meshComponent = getComponent(entity, MeshComponent) as Mesh
+  const meshComponent = getComponent(entity, MeshComponent)
   const instancingComponent = getComponent(entity, InstancingComponent)
   const transformComponent = getComponent(entity, TransformComponent)
   if (variantComponent.heuristic === 'DEVICE') {

@@ -40,7 +40,7 @@ import { EditorComponentType } from './Util'
 export const MeshNodeEditor: EditorComponentType = (props: { entity: Entity }) => {
   const entity = props.entity
   const { t } = useTranslation()
-  const meshComponent = getComponent(entity, MeshComponent) as Mesh | null
+  const meshComponent = getComponent(entity, MeshComponent)
   return (
     <NodeEditor
       name={t('editor:properties.mesh.name')}

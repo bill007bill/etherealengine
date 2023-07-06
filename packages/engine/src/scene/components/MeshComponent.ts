@@ -30,9 +30,9 @@ import { defineComponent } from '@etherealengine/engine/src/ecs/functions/Compon
 export const MeshComponent = defineComponent({
   name: 'EE_mesh',
   jsonID: 'mesh',
-  onInit: () => null as Mesh | null,
-  onSet: (entity, component, mesh?: Mesh | null) => {
-    if (mesh === null || mesh instanceof Mesh) {
+  onInit: (entity) => new Mesh(),
+  onSet: (entity, component, mesh?: Mesh) => {
+    if (mesh instanceof Mesh) {
       component.set(mesh)
       MeshComponent.valueMap[entity] = mesh
     }
