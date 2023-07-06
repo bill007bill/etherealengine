@@ -177,7 +177,12 @@ export const playAnimationClip = (
   animationComponent: ComponentType<typeof AnimationComponent>,
   loopAnimationComponent: ComponentType<typeof LoopAnimationComponent>
 ) => {
-  if (loopAnimationComponent.action) loopAnimationComponent.action.stop()
+  if (loopAnimationComponent.action) {
+    loopAnimationComponent.action.stop()
+    iterateEntityNode(entity, (entity) => {
+      removeComponent(entity, AnimationTrackComponent)
+    })
+  }
   if (
     loopAnimationComponent.activeClipIndex >= 0 &&
     animationComponent.animations[loopAnimationComponent.activeClipIndex]
