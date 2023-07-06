@@ -30,6 +30,7 @@ import { Camera, Frustum, Matrix4, Mesh, Skeleton, SkinnedMesh, Vector3 } from '
 import { insertionSort } from '@etherealengine/common/src/utils/insertionSort'
 import { defineActionQueue, getMutableState, getState, none, removeActionQueue } from '@etherealengine/hyperflux'
 
+import { AnimationTrackComponent } from '../../avatar/components/AnimationTrackComponent'
 import { V_000 } from '../../common/constants/MathConstants'
 import { Engine } from '../../ecs/classes/Engine'
 import { EngineActions, EngineState } from '../../ecs/classes/EngineState'
@@ -82,6 +83,12 @@ const frustumCulledQuery = defineQuery([TransformComponent, FrustumCullCameraCom
 export const computeLocalTransformMatrix = (entity: Entity) => {
   const localTransform = getComponent(entity, LocalTransformComponent)
   localTransform.matrix.compose(localTransform.position, localTransform.rotation, localTransform.scale)
+}
+
+export const composeTransformMatrix = (entity: Entity) => {
+  const transform = getComponent(entity, TransformComponent)
+  transform.matrix.compose(transform.position, transform.rotation, transform.scale)
+  transform.matrixInverse.copy(transform.matrix).invert()
 }
 
 export const computeTransformMatrix = (entity: Entity) => {
@@ -264,7 +271,7 @@ const filterAwakeRigidbodies = (entity: Entity) => !getComponent(entity, RigidBo
 
 const filterSleepingRigidbodies = (entity: Entity) => getComponent(entity, RigidBodyComponent).body.isSleeping()
 
-let sortedTransformEntities = [] as Entity[]
+const sortedTransformEntities = [] as Entity[]
 
 /** override Skeleton.update, as it is called inside  */
 const skeletonUpdate = Skeleton.prototype.update
@@ -340,7 +347,13 @@ const execute = () => {
   const dirtyFixedRigidbodyEntities = fixedRigidBodyQuery().filter(isDirty)
 
   for (const entity of dirtyNonDynamicLocalTransformEntities) computeLocalTransformMatrix(entity)
-  for (const entity of dirtySortedTransformEntities) computeTransformMatrix(entity)
+  for (const entity of dirtySortedTransformEntities) {
+    if (hasComponent(entity, AnimationTrackComponent)) {
+      composeTransformMatrix(entity)
+    } else {
+      computeTransformMatrix(entity)
+    }
+  }
 
   for (const entity of dirtyFixedRigidbodyEntities) copyTransformToRigidBody(entity)
   for (const entity of dirtyGroupEntities) updateGroupChildren(entity)

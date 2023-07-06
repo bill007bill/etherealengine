@@ -176,7 +176,10 @@ export const parseGLTFModel = (entity: Entity) => {
       hasComponent(parentEntity, LocalTransformComponent) && computeLocalTransformMatrix(parentEntity)
       computeTransformMatrix(parentEntity)
       setComponent(objEntity, NameComponent, obj.userData['xrengine.entity'] ?? obj.name)
+      //store parent object to reparent after addObjectToGroup
+      const parent = obj.parent
       addObjectToGroup(objEntity, obj)
+      parent?.add(obj)
       setComponent(objEntity, VisibleComponent, true)
       setComponent(objEntity, GLTFLoadedComponent, ['entity'])
       createObjectEntityFromGLTF(objEntity, obj)

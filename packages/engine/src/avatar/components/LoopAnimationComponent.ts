@@ -27,6 +27,7 @@ import { useEffect } from 'react'
 import { AnimationAction, AnimationClip, AnimationMixer, Vector3 } from 'three'
 
 import { isClient } from '../../common/functions/getEnvironment'
+import { Entity } from '../../ecs/classes/Entity'
 import {
   addComponent,
   ComponentType,
@@ -39,11 +40,14 @@ import {
   useOptionalComponent
 } from '../../ecs/functions/ComponentFunctions'
 import { useEntityContext } from '../../ecs/functions/EntityFunctions'
+import { iterateEntityNode } from '../../ecs/functions/EntityTree'
 import { CallbackComponent, setCallback, StandardCallbacks } from '../../scene/components/CallbackComponent'
 import { ModelComponent } from '../../scene/components/ModelComponent'
+import { NameComponent } from '../../scene/components/NameComponent'
 import { AnimationManager } from '../AnimationManager'
 import { setupAvatarModel } from '../functions/avatarFunctions'
 import { AnimationComponent } from './AnimationComponent'
+import { AnimationTrackComponent } from './AnimationTrackComponent'
 import { AvatarAnimationComponent } from './AvatarAnimationComponent'
 
 export const LoopAnimationComponent = defineComponent({
@@ -87,7 +91,11 @@ export const LoopAnimationComponent = defineComponent({
     useEffect(() => {
       if (hasComponent(entity, CallbackComponent)) return
       const play = () => {
-        playAnimationClip(getComponent(entity, AnimationComponent), getComponent(entity, LoopAnimationComponent))
+        playAnimationClip(
+          entity,
+          getComponent(entity, AnimationComponent),
+          getComponent(entity, LoopAnimationComponent)
+        )
       }
       const pause = () => {
         const loopAnimationComponent = getComponent(entity, LoopAnimationComponent)
@@ -157,7 +165,7 @@ export const LoopAnimationComponent = defineComponent({
         animationComponent.animations = scene.animations
       }
 
-      if (!loopComponent.action?.paused) playAnimationClip(animationComponent, loopComponent)
+      if (!loopComponent.action?.paused) playAnimationClip(entity, animationComponent, loopComponent)
     }, [animComponent?.animations, loopAnimationComponent?.hasAvatarAnimations])
 
     return null
@@ -165,6 +173,7 @@ export const LoopAnimationComponent = defineComponent({
 })
 
 export const playAnimationClip = (
+  entity: Entity,
   animationComponent: ComponentType<typeof AnimationComponent>,
   loopAnimationComponent: ComponentType<typeof LoopAnimationComponent>
 ) => {
@@ -173,14 +182,23 @@ export const playAnimationClip = (
     loopAnimationComponent.activeClipIndex >= 0 &&
     animationComponent.animations[loopAnimationComponent.activeClipIndex]
   ) {
+    const clip = AnimationClip.findByName(
+      animationComponent.animations,
+      animationComponent.animations[loopAnimationComponent.activeClipIndex].name
+    )
+    for (const track of clip.tracks) {
+      const trackEntity = iterateEntityNode(
+        entity,
+        (entity) => entity,
+        (entity) => getComponent(entity, NameComponent) === track.name.split('.')[0],
+        false,
+        true
+      )[0]
+      if (trackEntity) {
+        setComponent(trackEntity, AnimationTrackComponent, {})
+      }
+    }
     animationComponent.mixer.stopAllAction()
-    loopAnimationComponent.action = animationComponent.mixer
-      .clipAction(
-        AnimationClip.findByName(
-          animationComponent.animations,
-          animationComponent.animations[loopAnimationComponent.activeClipIndex].name
-        )
-      )
-      .play()
+    loopAnimationComponent.action = animationComponent.mixer.clipAction(clip).play()
   }
 }
