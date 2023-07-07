@@ -45,6 +45,7 @@ import {
   setComponent
 } from '../../ecs/functions/ComponentFunctions'
 import { createEntity } from '../../ecs/functions/EntityFunctions'
+import { iterateEntityNode } from '../../ecs/functions/EntityTree'
 import UpdateableObject3D from '../../scene/classes/UpdateableObject3D'
 import { setCallback } from '../../scene/components/CallbackComponent'
 import { addObjectToGroup, GroupComponent, removeObjectFromGroup } from '../../scene/components/GroupComponent'
@@ -52,6 +53,7 @@ import { UpdatableCallback, UpdatableComponent } from '../../scene/components/Up
 import { ObjectLayers } from '../../scene/constants/ObjectLayers'
 import { setObjectLayers } from '../../scene/functions/setObjectLayers'
 import iterateObject3D from '../../scene/util/iterateObject3D'
+import { LocalTransformComponent } from '../../transform/components/TransformComponent'
 import { computeTransformMatrix, updateGroupChildren } from '../../transform/systems/TransformSystem'
 import { XRState } from '../../xr/XRState'
 import { createAvatarAnimationGraph } from '../animation/AvatarAnimationGraph'
@@ -189,8 +191,17 @@ export const rigAvatarModel = (entity: Entity) => (model: Object3D) => {
   const avatarAnimationComponent = getComponent(entity, AvatarAnimationComponent)
 
   const rig = avatarBoneMatching(model)
-  const rootBone = rig.Root || rig.Hips
+  const rootBone = (rig.Root || rig.Hips) as Bone & { entity: Entity }
   rootBone.updateWorldMatrix(true, true)
+  // iterateEntityNode(rootBone.entity, (entity) => {
+  //   const transform = getComponent(entity, LocalTransformComponent)
+  //   const bone = getComponent(entity, GroupComponent)[0] as any as Bone
+  //   transform.position.copy(bone.position)
+  //   transform.rotation.copy(bone.quaternion)
+  //   transform.scale.copy(bone.scale)
+  //   computeTransformMatrix(entity)
+  // })
+  //
 
   const skinnedMeshes = findSkinnedMeshes(model)
 
@@ -304,7 +315,7 @@ export function makeSkinnedMeshFromBoneData(bonesData) {
   })
 
   // we assume that root bone is the first one
-  const hipBone = bones[0]
+  const hipBone = bones[0] as Bone & { entity: Entity }
   hipBone.updateWorldMatrix(false, true)
 
   const group = new Group()

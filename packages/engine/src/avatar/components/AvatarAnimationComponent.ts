@@ -220,7 +220,7 @@ export const AvatarRigComponent = defineComponent({
 
     /**
      * Proxify the rig bones with the bitecs store
-     */
+     **/
     useEffect(() => {
       const rig = anim.rig.value
       for (const [boneName, bone] of Object.entries(rig)) {

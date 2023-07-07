@@ -43,7 +43,7 @@ import { createPriorityQueue } from '../../ecs/PriorityQueue'
 import { InputSourceComponent } from '../../input/components/InputSourceComponent'
 import { NetworkObjectComponent } from '../../networking/components/NetworkObjectComponent'
 import { RigidBodyComponent } from '../../physics/components/RigidBodyComponent'
-import { addObjectToGroup, GroupComponent } from '../../scene/components/GroupComponent'
+import { addObjectToGroup, GroupComponent, Object3DWithEntity } from '../../scene/components/GroupComponent'
 import { NameComponent } from '../../scene/components/NameComponent'
 import { UUIDComponent } from '../../scene/components/UUIDComponent'
 import { VisibleComponent } from '../../scene/components/VisibleComponent'
@@ -54,7 +54,7 @@ import {
   DistanceFromCameraComponent,
   FrustumCullCameraComponent
 } from '../../transform/components/DistanceComponents'
-import { TransformComponent } from '../../transform/components/TransformComponent'
+import { LocalTransformComponent, TransformComponent } from '../../transform/components/TransformComponent'
 import { updateGroupChildren } from '../../transform/systems/TransformSystem'
 import { getCameraMode, isMobileXRHeadset, XRAction, XRState } from '../../xr/XRState'
 import { updateAnimationGraph } from '.././animation/AnimationGraph'
@@ -290,12 +290,15 @@ const execute = () => {
     rootBone.traverse((bone: Bone) => {
       if (!bone.isBone) return
 
-      const targetBone = rig[bone.name]
+      const targetBone = rig[bone.name] as Bone & { entity: Entity }
       if (!targetBone) {
         return
       }
 
-      targetBone.quaternion.copy(bone.quaternion)
+      const targetBoneEntity = targetBone.entity
+      const targetTransform = getComponent(targetBoneEntity, LocalTransformComponent)
+      targetTransform.rotation.copy(bone.quaternion)
+      //targetBone.quaternion.copy(bone.quaternion)
 
       // Only copy the root position
       if (targetBone === rig.Hips) {

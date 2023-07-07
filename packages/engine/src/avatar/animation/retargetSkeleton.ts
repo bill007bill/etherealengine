@@ -25,6 +25,10 @@ Ethereal Engine. All Rights Reserved.
 
 import { Bone, Matrix4, Object3D, Quaternion, Skeleton, SkinnedMesh, Vector3 } from 'three'
 
+import { Entity } from '../../ecs/classes/Entity'
+import { getComponent } from '../../ecs/functions/ComponentFunctions'
+import { LocalTransformComponent } from '../../transform/components/TransformComponent'
+
 function getBoneBindMatrix(skeleton: Skeleton, index: number, matrix: Matrix4) {
   const bone = skeleton.bones[index]
 
@@ -54,7 +58,7 @@ export function retargetSkeleton(targetSkeleton: Skeleton, sourceSkeleton: Skele
   const mat3 = new Matrix4()
 
   for (let i = 0; i < targetSkeleton.bones.length; i++) {
-    const bone = targetSkeleton.bones[i]
+    const bone = targetSkeleton.bones[i] as Bone & { entity: Entity }
 
     // Skip the root bone if present
     if (bone.name === rootBoneKey) {
@@ -104,7 +108,7 @@ export function retargetSkeleton(targetSkeleton: Skeleton, sourceSkeleton: Skele
  * @param skeleton
  */
 export function syncModelSkeletons(model: Object3D, skeleton: Skeleton) {
-  let meshes: SkinnedMesh[] = []
+  const meshes: SkinnedMesh[] = []
   model.traverse((obj: SkinnedMesh) => {
     if (obj.isSkinnedMesh) {
       meshes.push(obj)
@@ -114,13 +118,14 @@ export function syncModelSkeletons(model: Object3D, skeleton: Skeleton) {
   const { bones, boneInverses } = skeleton
 
   for (let i = 0; i < skeleton.bones.length; i++) {
-    const bone = bones[i]
-
+    const bone = bones[i] as Bone & { entity: Entity }
     meshes.forEach((mesh) => {
       const { bones: meshBones, boneInverses: meshBoneInverses } = mesh.skeleton
       const j = meshBones.findIndex((b) => b === bone)
       if (j > -1) {
-        meshBoneInverses[j].copy(boneInverses[i])
+        const boneTransform = getComponent(bone.entity, LocalTransformComponent)
+        boneInverses[i].clone().invert().decompose(new Vector3(), boneTransform.rotation, new Vector3())
+        //meshBoneInverses[j].copy(boneInverses[i])
       }
     })
   }
