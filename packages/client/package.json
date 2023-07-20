@@ -79,8 +79,6 @@
     "vite": "4.2.1",
     "vite-plugin-compression": "0.5.1",
     "vite-plugin-ejs": "^1.6.4",
-    "vite-plugin-optimize-persist": "^0.1.2",
-    "vite-plugin-package-config": "0.1.1",
     "vite-plugin-pwa": "^0.14.7"
   },
   "devDependencies": {
