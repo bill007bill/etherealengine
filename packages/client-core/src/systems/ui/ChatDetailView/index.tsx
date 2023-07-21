@@ -28,7 +28,7 @@ import React, { Fragment, useState } from 'react'
 import { AuthState } from '@etherealengine/client-core/src/user/services/AuthService'
 import { WorldState } from '@etherealengine/engine/src/networking/interfaces/WorldState'
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
-import { getMutableState, hookstate, useHookstate} from '@etherealengine/hyperflux'
+import { getMutableState, hookstate, useHookstate } from '@etherealengine/hyperflux'
 import Avatar from '@etherealengine/ui/src/primitives/mui/Avatar'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
