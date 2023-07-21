@@ -23,7 +23,7 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState } from '@hookstate/core'
+import { hookstate } from '@etherealengine/hyperflux'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -37,12 +37,9 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createSocialsMenuView() {
-  return createXRUI(SocialsMenuView, createSocialsMenuState())
+  return createXRUI(SocialsMenuView, hookstate({}))
 }
 
-function createSocialsMenuState() {
-  return createState({})
-}
 /** @deprecated */
 const SocialsMenuView = () => {
   const { t } = useTranslation()

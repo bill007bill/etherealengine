@@ -23,7 +23,7 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState } from '@hookstate/core'
+import { hookstate } from '@etherealengine/hyperflux'
 import React, { useEffect, useState } from 'react'
 
 import { changeAvatarAnimationState } from '@etherealengine/engine/src/avatar/animation/AvatarAnimationGraph'
@@ -38,12 +38,9 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createEmoteDetailView() {
-  return createXRUI(EmoteDetailView, createEmoteDetailState())
+  return createXRUI(EmoteDetailView, hookstate({}))
 }
 
-function createEmoteDetailState() {
-  return createState({})
-}
 /** @deprecated */
 const EmoteDetailView = () => {
   const [page, setPage] = useState(0)

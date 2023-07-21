@@ -23,7 +23,6 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState, useHookstate, useState } from '@hookstate/core'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -35,7 +34,7 @@ import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
 import { WidgetAppService } from '@etherealengine/engine/src/xrui/WidgetAppService'
 import { WidgetName } from '@etherealengine/engine/src/xrui/Widgets'
-import { getMutableState } from '@etherealengine/hyperflux'
+import { getMutableState, hookstate, useHookstate } from '@etherealengine/hyperflux'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
 import { AuthState } from '../../../user/services/AuthService'
@@ -45,16 +44,13 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createLocationMenuView() {
-  return createXRUI(LocationMenuView, createLocationMenuState())
+  return createXRUI(LocationMenuView, hookstate({}))
 }
 
-function createLocationMenuState() {
-  return createState({})
-}
 /** @deprecated */
 const LocationMenuView = () => {
   const { t } = useTranslation()
-  const xrState = useState(getMutableState(XRState))
+  const xrState = useHookstate(getMutableState(XRState))
 
   const isAdmin = useHookstate(getMutableState(AuthState)).user?.scopes?.value?.find(
     (scope) => scope.type === 'admin:admin'

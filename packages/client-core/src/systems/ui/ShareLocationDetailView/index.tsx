@@ -23,7 +23,6 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState, useHookstate } from '@hookstate/core'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -31,7 +30,7 @@ import { useTranslation } from 'react-i18next'
 import { isShareAvailable } from '@etherealengine/engine/src/common/functions/DetectFeatures'
 import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
-import { getMutableState } from '@etherealengine/hyperflux'
+import { getMutableState, hookstate, useHookstate } from '@etherealengine/hyperflux'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
 import { useShareMenuHooks } from '../../../user/components/UserMenu/menus/ShareMenu'
@@ -42,12 +41,9 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createShareLocationDetailView() {
-  return createXRUI(ShareLocationDetailView, createShareLocationDetailState())
+  return createXRUI(ShareLocationDetailView, hookstate({}))
 }
 
-function createShareLocationDetailState() {
-  return createState({})
-}
 /** @deprecated */
 const ShareLocationDetailView = () => {
   const { t } = useTranslation()

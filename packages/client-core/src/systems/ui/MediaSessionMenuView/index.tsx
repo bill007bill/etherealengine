@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next'
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
 import { WidgetAppService } from '@etherealengine/engine/src/xrui/WidgetAppService'
 import { WidgetName } from '@etherealengine/engine/src/xrui/Widgets'
-import { createState, getMutableState, useHookstate } from '@etherealengine/hyperflux'
+import { hookstate, getMutableState, useHookstate } from '@etherealengine/hyperflux'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
 import { MediaStreamState } from '../../../transports/MediaStreams'
@@ -44,12 +44,9 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createMediaSessionMenuView() {
-  return createXRUI(MediaSessionMenuView, createMediaSessionMenuState())
+  return createXRUI(MediaSessionMenuView, hookstate({}))
 }
 
-function createMediaSessionMenuState() {
-  return createState({})
-}
 /** @deprecated */
 const MediaSessionMenuView = () => {
   const { t } = useTranslation()

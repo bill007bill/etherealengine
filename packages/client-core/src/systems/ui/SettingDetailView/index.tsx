@@ -23,7 +23,6 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState } from '@hookstate/core'
 import React, { useEffect, useLayoutEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -40,7 +39,7 @@ import { getComponent } from '@etherealengine/engine/src/ecs/functions/Component
 import { RendererState } from '@etherealengine/engine/src/renderer/RendererState'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
-import { dispatchAction, getMutableState, useHookstate } from '@etherealengine/hyperflux'
+import { dispatchAction, getMutableState, hookstate, useHookstate } from '@etherealengine/hyperflux'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
 import XRCheckboxButton from '../../components/XRCheckboxButton'
@@ -51,12 +50,9 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createSettingDetailView() {
-  return createXRUI(SettingDetailView, createSettingDetailState())
+  return createXRUI(SettingDetailView, hookstate({}))
 }
 
-function createSettingDetailState() {
-  return createState({})
-}
 /** @deprecated */
 // TODO: update this to newest settings implementation
 const SettingDetailView = () => {

@@ -23,7 +23,6 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState, useHookstate } from '@hookstate/core'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -34,7 +33,7 @@ import { AvatarType } from '@etherealengine/engine/src/schemas/user/avatar.schem
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
 import { WidgetAppService } from '@etherealengine/engine/src/xrui/WidgetAppService'
 import { WidgetName } from '@etherealengine/engine/src/xrui/Widgets'
-import { getMutableState } from '@etherealengine/hyperflux'
+import { getMutableState, hookstate, useHookstate } from '@etherealengine/hyperflux'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
 import { AuthState } from '../../../user/services/AuthService'
@@ -43,11 +42,7 @@ import XRIconButton from '../../components/XRIconButton'
 import styleString from './index.scss?inline'
 
 export function createSelectAvatarMenu() {
-  return createXRUI(SelectAvatarMenu, createSelectAvatarMenuState())
-}
-
-function createSelectAvatarMenuState() {
-  return createState({})
+  return createXRUI(SelectAvatarMenu, hookstate({}))
 }
 
 const SelectAvatarMenu = () => {

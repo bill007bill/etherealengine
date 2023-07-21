@@ -23,7 +23,6 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState, useHookstate } from '@hookstate/core'
 // import * as polyfill from 'credential-handler-polyfill'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -34,7 +33,7 @@ import { WorldState } from '@etherealengine/engine/src/networking/interfaces/Wor
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
 import { WidgetAppService } from '@etherealengine/engine/src/xrui/WidgetAppService'
 import { WidgetName } from '@etherealengine/engine/src/xrui/Widgets'
-import { getMutableState } from '@etherealengine/hyperflux'
+import { getMutableState, hookstate, useHookstate } from '@etherealengine/hyperflux'
 import CircularProgress from '@etherealengine/ui/src/primitives/mui/CircularProgress'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 import IconButton from '@etherealengine/ui/src/primitives/mui/IconButton'
@@ -59,11 +58,7 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createProfileDetailView() {
-  return createXRUI(ProfileDetailView, createProfileDetailState())
-}
-
-function createProfileDetailState() {
-  return createState({})
+  return createXRUI(ProfileDetailView, hookstate({}))
 }
 
 /** @deprecated */

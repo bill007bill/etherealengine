@@ -23,7 +23,7 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState } from '@hookstate/core'
+import { hookstate } from '@etherealengine/hyperflux'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -57,11 +57,7 @@ import styleString from './index.scss?inline'
 const logger = multiLogger.child({ component: 'client-core:UploadAvatarMenu' })
 
 export function createUploadAvatarMenu() {
-  return createXRUI(UploadAvatarMenu, createUploadAvatarMenuState())
-}
-
-function createUploadAvatarMenuState() {
-  return createState({})
+  return createXRUI(UploadAvatarMenu, hookstate({}))
 }
 
 type FileEvent = React.ChangeEvent<HTMLInputElement> & {

@@ -23,7 +23,7 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState } from '@hookstate/core'
+import { hookstate } from '@etherealengine/hyperflux'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -35,12 +35,9 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createAdminControlsMenuView() {
-  return createXRUI(AdminControlsMenuView, createAdminControlsMenuState())
+  return createXRUI(AdminControlsMenuView, hookstate({}))
 }
 
-function createAdminControlsMenuState() {
-  return createState({})
-}
 /** @deprecated */
 const AdminControlsMenuView = () => {
   const { t } = useTranslation()

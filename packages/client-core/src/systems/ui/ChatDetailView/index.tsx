@@ -23,13 +23,12 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState, useHookstate } from '@hookstate/core'
 import React, { Fragment, useState } from 'react'
 
 import { AuthState } from '@etherealengine/client-core/src/user/services/AuthService'
 import { WorldState } from '@etherealengine/engine/src/networking/interfaces/WorldState'
 import { createXRUI } from '@etherealengine/engine/src/xrui/functions/createXRUI'
-import { getMutableState } from '@etherealengine/hyperflux'
+import { getMutableState, hookstate, useHookstate} from '@etherealengine/hyperflux'
 import Avatar from '@etherealengine/ui/src/primitives/mui/Avatar'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
@@ -40,12 +39,9 @@ import styleString from './index.scss?inline'
 
 /** @deprecated */
 export function createChatDetailView() {
-  return createXRUI(ChatDetailView, createChatDetailState())
+  return createXRUI(ChatDetailView, hookstate({}))
 }
 
-function createChatDetailState() {
-  return createState({})
-}
 /** @deprecated */
 const ChatDetailView = () => {
   const [unreadMessages, setUnreadMessages] = useState(false)

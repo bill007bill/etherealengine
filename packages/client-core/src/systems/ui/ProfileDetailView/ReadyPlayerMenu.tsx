@@ -23,7 +23,7 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { createState } from '@hookstate/core'
+import { hookstate } from '@etherealengine/hyperflux'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -48,11 +48,7 @@ import styleString from './index.scss?inline'
 const logger = multiLogger.child({ component: 'client-core:ReadyPlayerMenu' })
 
 export function createReadyPlayerMenu() {
-  return createXRUI(ReadyPlayerMenu, createReadyPlayerMenuState())
-}
-
-function createReadyPlayerMenuState() {
-  return createState({})
+  return createXRUI(ReadyPlayerMenu, hookstate({}))
 }
 
 const ReadyPlayerMenu = () => {
