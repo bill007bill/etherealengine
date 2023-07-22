@@ -41,7 +41,6 @@ import RAPIER, {
 } from '@dimforge/rapier3d-compat'
 import {
   BufferAttribute,
-  Line,
   Matrix4,
   Mesh,
   OrthographicCamera,
@@ -51,11 +50,10 @@ import {
   Vector3
 } from 'three'
 
-import { getMutableState, getState } from '@etherealengine/hyperflux'
+import { getState } from '@etherealengine/hyperflux'
 
 import { cleanupAllMeshData } from '../../assets/classes/AssetLoader'
 import { V_000 } from '../../common/constants/MathConstants'
-import { Engine } from '../../ecs/classes/Engine'
 import { EngineState } from '../../ecs/classes/EngineState'
 import { Entity, UndefinedEntity } from '../../ecs/classes/Entity'
 import {
@@ -69,15 +67,14 @@ import {
 import { EntityTreeComponent, iterateEntityNode } from '../../ecs/functions/EntityTree'
 import { GroupComponent } from '../../scene/components/GroupComponent'
 import { MeshComponent } from '../../scene/components/MeshComponent'
-import { NameComponent } from '../../scene/components/NameComponent'
 import { UUIDComponent } from '../../scene/components/UUIDComponent'
 import { TransformComponent } from '../../transform/components/TransformComponent'
 import { CollisionComponent } from '../components/CollisionComponent'
 import {
-  getTagComponentForRigidBody,
   RigidBodyComponent,
   RigidBodyKinematicPositionBasedTagComponent,
-  RigidBodyKinematicVelocityBasedTagComponent
+  RigidBodyKinematicVelocityBasedTagComponent,
+  getTagComponentForRigidBody
 } from '../components/RigidBodyComponent'
 import { CollisionGroups, DefaultCollisionMask } from '../enums/CollisionGroups'
 import { getInteractionGroups } from '../functions/getInteractionGroups'

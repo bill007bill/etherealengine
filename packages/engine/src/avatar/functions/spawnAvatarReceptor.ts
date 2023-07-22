@@ -24,7 +24,7 @@ Ethereal Engine. All Rights Reserved.
 */
 
 import { Collider, ColliderDesc, RigidBody, RigidBodyDesc } from '@dimforge/rapier3d-compat'
-import { AnimationClip, AnimationMixer, Object3D, Quaternion, Vector3 } from 'three'
+import { AnimationClip, AnimationMixer, Object3D, Vector3 } from 'three'
 
 import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
 import { UserId } from '@etherealengine/common/src/interfaces/UserId'
@@ -33,22 +33,14 @@ import { getState } from '@etherealengine/hyperflux'
 import { setTargetCameraRotation } from '../../camera/systems/CameraInputSystem'
 import { Engine } from '../../ecs/classes/Engine'
 import { Entity } from '../../ecs/classes/Entity'
-import {
-  addComponent,
-  getComponent,
-  hasComponent,
-  removeComponent,
-  setComponent
-} from '../../ecs/functions/ComponentFunctions'
+import { addComponent, getComponent, setComponent } from '../../ecs/functions/ComponentFunctions'
 import { LocalInputTagComponent } from '../../input/components/LocalInputTagComponent'
 import { BoundingBoxComponent } from '../../interaction/components/BoundingBoxComponents'
+import { GrabberComponent } from '../../interaction/components/GrabbableComponent'
 import {
-  NetworkObjectAuthorityTag,
   NetworkObjectComponent,
   NetworkObjectSendPeriodicUpdatesTag
 } from '../../networking/components/NetworkObjectComponent'
-import { NetworkPeerFunctions } from '../../networking/functions/NetworkPeerFunctions'
-import { WorldNetworkAction } from '../../networking/functions/WorldNetworkAction'
 import { WorldState } from '../../networking/interfaces/WorldState'
 import { Physics } from '../../physics/classes/Physics'
 import { CollisionComponent } from '../../physics/components/CollisionComponent'
@@ -65,7 +57,6 @@ import { AnimationComponent } from '../components/AnimationComponent'
 import { AvatarAnimationComponent } from '../components/AvatarAnimationComponent'
 import { AvatarComponent } from '../components/AvatarComponent'
 import { AvatarControllerComponent } from '../components/AvatarControllerComponent'
-import { SpawnPoseComponent } from '../components/SpawnPoseComponent'
 
 export const avatarRadius = 0.25
 export const defaultAvatarHeight = 1.8
@@ -121,11 +112,6 @@ export const spawnAvatarReceptor = (entityUUID: EntityUUID) => {
     locomotion: new Vector3()
   })
 
-  addComponent(entity, SpawnPoseComponent, {
-    position: new Vector3().copy(transform.position),
-    rotation: new Quaternion().copy(transform.rotation)
-  })
-
   if (ownerID === Engine.instance.userId) {
     createAvatarController(entity)
     addComponent(entity, LocalInputTagComponent, true)
@@ -138,6 +124,7 @@ export const spawnAvatarReceptor = (entityUUID: EntityUUID) => {
 
   setComponent(entity, ShadowComponent)
   setComponent(entity, BoundingBoxComponent)
+  setComponent(entity, GrabberComponent)
 }
 
 export const createAvatarCollider = (entity: Entity): Collider => {

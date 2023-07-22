@@ -29,19 +29,17 @@ import { AnimationAction, AnimationClip, AnimationMixer, Vector3 } from 'three'
 import { isClient } from '../../common/functions/getEnvironment'
 import { Entity } from '../../ecs/classes/Entity'
 import {
-  addComponent,
   ComponentType,
   defineComponent,
   getComponent,
   hasComponent,
   removeComponent,
   setComponent,
-  useComponent,
   useOptionalComponent
 } from '../../ecs/functions/ComponentFunctions'
 import { useEntityContext } from '../../ecs/functions/EntityFunctions'
 import { iterateEntityNode } from '../../ecs/functions/EntityTree'
-import { CallbackComponent, setCallback, StandardCallbacks } from '../../scene/components/CallbackComponent'
+import { CallbackComponent, StandardCallbacks, setCallback } from '../../scene/components/CallbackComponent'
 import { ModelComponent } from '../../scene/components/ModelComponent'
 import { NameComponent } from '../../scene/components/NameComponent'
 import { AnimationManager } from '../AnimationManager'

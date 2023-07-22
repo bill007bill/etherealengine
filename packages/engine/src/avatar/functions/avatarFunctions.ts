@@ -24,7 +24,7 @@ Ethereal Engine. All Rights Reserved.
 */
 
 import { pipe } from 'bitecs'
-import { AnimationClip, AnimationMixer, Bone, Box3, Group, Mesh, Object3D, Skeleton, SkinnedMesh, Vector3 } from 'three'
+import { AnimationClip, AnimationMixer, Bone, Box3, Group, Object3D, Skeleton, SkinnedMesh, Vector3 } from 'three'
 
 import { dispatchAction, getState } from '@etherealengine/hyperflux'
 
@@ -45,7 +45,6 @@ import {
   setComponent
 } from '../../ecs/functions/ComponentFunctions'
 import { createEntity } from '../../ecs/functions/EntityFunctions'
-import { iterateEntityNode } from '../../ecs/functions/EntityTree'
 import UpdateableObject3D from '../../scene/classes/UpdateableObject3D'
 import { setCallback } from '../../scene/components/CallbackComponent'
 import { addObjectToGroup, GroupComponent, removeObjectFromGroup } from '../../scene/components/GroupComponent'
@@ -53,7 +52,6 @@ import { UpdatableCallback, UpdatableComponent } from '../../scene/components/Up
 import { ObjectLayers } from '../../scene/constants/ObjectLayers'
 import { setObjectLayers } from '../../scene/functions/setObjectLayers'
 import iterateObject3D from '../../scene/util/iterateObject3D'
-import { LocalTransformComponent } from '../../transform/components/TransformComponent'
 import { computeTransformMatrix, updateGroupChildren } from '../../transform/systems/TransformSystem'
 import { XRState } from '../../xr/XRState'
 import { createAvatarAnimationGraph } from '../animation/AvatarAnimationGraph'
@@ -270,7 +268,7 @@ export const setupAvatarMaterials = (entity, root) => {
         id: object.uuid,
         material: material
       })
-      object.material = DissolveEffect.getDissolveTexture(object)
+      object.material = DissolveEffect.createDissolveMaterial(object)
     }
   })
 

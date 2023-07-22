@@ -30,7 +30,6 @@ import { useParams } from 'react-router-dom'
 import { LocationService } from '@etherealengine/client-core/src/social/services/LocationService'
 import { leaveNetwork } from '@etherealengine/client-core/src/transports/SocketWebRTCClientFunctions'
 import { AuthState } from '@etherealengine/client-core/src/user/services/AuthService'
-import { PeerID } from '@etherealengine/common/src/interfaces/PeerID'
 import { UserId } from '@etherealengine/common/src/interfaces/UserId'
 import multiLogger from '@etherealengine/common/src/logger'
 import { getSearchParamFromURL } from '@etherealengine/common/src/utils/getSearchParamFromURL'
@@ -204,7 +203,7 @@ export const useLoadEngineWithScene = ({ spectate }: Props = {}) => {
   }, [engineState.sceneLoaded, engineState.loadingProgress])
 }
 
-export const useOnlineInstance = () => {
+export const useOnlineNetwork = () => {
   useEffect(() => {
     getMutableState(NetworkState).config.set({
       world: true,
@@ -216,7 +215,7 @@ export const useOnlineInstance = () => {
   }, [])
 }
 
-export const useOfflineScene = (props?: { spectate?: boolean }) => {
+export const useOfflineNetwork = (props?: { spectate?: boolean }) => {
   const engineState = useHookstate(getMutableState(EngineState))
   const authState = useHookstate(getMutableState(AuthState))
 
@@ -228,8 +227,8 @@ export const useOfflineScene = (props?: { spectate?: boolean }) => {
   useEffect(() => {
     if (engineState.sceneLoaded.value) {
       const userId = Engine.instance.userId
+      const peerID = Engine.instance.peerID
       const userIndex = 1
-      const peerID = 'peerID' as PeerID
       const peerIndex = 1
 
       const networkState = getMutableState(NetworkState)

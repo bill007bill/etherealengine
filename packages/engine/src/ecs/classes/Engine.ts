@@ -26,14 +26,14 @@ Ethereal Engine. All Rights Reserved.
 import * as bitecs from 'bitecs'
 
 import type { UserId } from '@etherealengine/common/src/interfaces/UserId'
-import { createHyperStore, getMutableState, getState, ReactorRoot, State } from '@etherealengine/hyperflux'
 import * as Hyperflux from '@etherealengine/hyperflux'
+import { createHyperStore, getMutableState, getState, ReactorRoot, State } from '@etherealengine/hyperflux'
 import { HyperStore } from '@etherealengine/hyperflux/functions/StoreFunctions'
 
 import { NetworkTopics } from '../../networking/classes/Network'
 
-import '../utils/threejsPatches'
 import '../../patchEngineNode'
+import '../utils/threejsPatches'
 
 import { EventQueue } from '@dimforge/rapier3d-compat'
 import type { FeathersApplication } from '@feathersjs/feathers'
@@ -43,7 +43,6 @@ import { BoxGeometry, Group, Mesh, MeshNormalMaterial, Object3D, Raycaster, Scen
 import type { ServiceTypes } from '@etherealengine/common/declarations'
 import { NetworkId } from '@etherealengine/common/src/interfaces/NetworkId'
 import { PeerID } from '@etherealengine/common/src/interfaces/PeerID'
-import { ComponentJson } from '@etherealengine/common/src/interfaces/SceneInterface'
 
 import { GLTFLoader } from '../../assets/loaders/gltf/GLTFLoader'
 import { AvatarComponent } from '../../avatar/components/AvatarComponent'
@@ -278,9 +277,6 @@ export class Engine {
    */
   networkObjectQuery = defineQuery([NetworkObjectComponent])
 
-  /** Registry map of prefabs  */
-  scenePrefabRegistry = new Map<string, ComponentJson[]>()
-
   /** A screenspace raycaster for the pointer */
   pointerScreenRaycaster = new Raycaster()
 
@@ -356,6 +352,12 @@ globalThis.Hyperflux = Hyperflux
 
 export async function destroyEngine() {
   Engine.instance.engineTimer.clear()
+
+  if (Engine.instance.api) {
+    if ((Engine.instance.api as any).server) await Engine.instance.api.teardown()
+    else if ((Engine.instance.api as any).get('sequelizeClient'))
+      await (Engine.instance.api as any).get('sequelizeClient').close()
+  }
 
   /** Remove all entities */
   const entities = Engine.instance.entityQuery()

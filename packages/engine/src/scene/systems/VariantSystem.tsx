@@ -23,8 +23,6 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { Not } from 'bitecs'
-
 import { getState } from '@etherealengine/hyperflux'
 
 import { EngineState } from '../../ecs/classes/EngineState'

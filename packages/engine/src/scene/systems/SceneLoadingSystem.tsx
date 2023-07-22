@@ -23,18 +23,14 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep, startCase } from 'lodash'
 import { useEffect } from 'react'
-import React from 'react'
 import { MathUtils } from 'three'
 
 import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
 import { ComponentJson, EntityJson, SceneData, SceneJson } from '@etherealengine/common/src/interfaces/SceneInterface'
 import logger from '@etherealengine/common/src/logger'
-import {
-  LocalTransformComponent,
-  setLocalTransformComponent
-} from '@etherealengine/engine/src/transform/components/TransformComponent'
+import { setLocalTransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 import {
   addActionReceptor,
   dispatchAction,
@@ -43,8 +39,11 @@ import {
   removeActionReceptor,
   useHookstate
 } from '@etherealengine/hyperflux'
-import { getSystemsFromSceneData, SystemImportType } from '@etherealengine/projects/loadSystemInjection'
+import { SystemImportType, getSystemsFromSceneData } from '@etherealengine/projects/loadSystemInjection'
 
+import { PositionalAudioComponent } from '../../audio/components/PositionalAudioComponent'
+import { LoopAnimationComponent } from '../../avatar/components/LoopAnimationComponent'
+import { BehaveGraphComponent } from '../../behave-graph/components/BehaveGraphComponent'
 import {
   AppLoadingAction,
   AppLoadingServiceReceptor,
@@ -57,7 +56,7 @@ import { Entity } from '../../ecs/classes/Entity'
 import { SceneState } from '../../ecs/classes/Scene'
 import {
   ComponentJSONIDMap,
-  ComponentType,
+  ComponentMap,
   defineQuery,
   getAllComponents,
   getComponent,
@@ -69,45 +68,121 @@ import {
 } from '../../ecs/functions/ComponentFunctions'
 import { createEntity } from '../../ecs/functions/EntityFunctions'
 import {
-  addEntityNodeChild,
   EntityTreeComponent,
+  addEntityNodeChild,
   getAllEntitiesInTree,
-  removeEntityNode,
   removeEntityNodeRecursively
 } from '../../ecs/functions/EntityTree'
-import { defineSystem, disableSystems, startSystem, SystemDefinitions } from '../../ecs/functions/SystemFunctions'
+import { SystemDefinitions, defineSystem, disableSystems, startSystem } from '../../ecs/functions/SystemFunctions'
+import { GrabbableComponent } from '../../interaction/components/GrabbableComponent'
 import { TransformComponent } from '../../transform/components/TransformComponent'
+import { XRAnchorComponent } from '../../xr/XRComponents'
+import { AmbientLightComponent } from '../components/AmbientLightComponent'
+import { CameraSettingsComponent } from '../components/CameraSettingsComponent'
+import { CloudComponent } from '../components/CloudComponent'
+import { ColliderComponent } from '../components/ColliderComponent'
+import { DirectionalLightComponent } from '../components/DirectionalLightComponent'
+import { EnvMapBakeComponent } from '../components/EnvMapBakeComponent'
+import { EnvmapComponent } from '../components/EnvmapComponent'
 import { FogSettingsComponent } from '../components/FogSettingsComponent'
 import { GLTFLoadedComponent } from '../components/GLTFLoadedComponent'
+import { GroundPlaneComponent } from '../components/GroundPlaneComponent'
 import { GroupComponent } from '../components/GroupComponent'
+import { HemisphereLightComponent } from '../components/HemisphereLightComponent'
+import { ImageComponent } from '../components/ImageComponent'
+import { InteriorComponent } from '../components/InteriorComponent'
+import { LoadVolumeComponent } from '../components/LoadVolumeComponent'
+import { MediaComponent } from '../components/MediaComponent'
 import { MediaSettingsComponent } from '../components/MediaSettingsComponent'
+import { MountPointComponent } from '../components/MountPointComponent'
 import { NameComponent } from '../components/NameComponent'
+import { OceanComponent } from '../components/OceanComponent'
+import { ParticleSystemComponent } from '../components/ParticleSystemComponent'
+import { PointLightComponent } from '../components/PointLightComponent'
 import { PostProcessingComponent } from '../components/PostProcessingComponent'
+import { PrefabComponent } from '../components/PrefabComponent'
 import { RenderSettingsComponent } from '../components/RenderSettingsComponent'
 import { SceneAssetPendingTagComponent } from '../components/SceneAssetPendingTagComponent'
 import { SceneDynamicLoadTagComponent } from '../components/SceneDynamicLoadTagComponent'
 import { SceneObjectComponent } from '../components/SceneObjectComponent'
+import { ScenePreviewCameraComponent } from '../components/ScenePreviewCamera'
+import { ScreenshareTargetComponent } from '../components/ScreenshareTargetComponent'
+import { ShadowComponent } from '../components/ShadowComponent'
+import { SkyboxComponent } from '../components/SkyboxComponent'
+import { SpawnPointComponent } from '../components/SpawnPointComponent'
+import { SplineComponent } from '../components/SplineComponent'
+import { SpotLightComponent } from '../components/SpotLightComponent'
+import { SystemComponent } from '../components/SystemComponent'
 import { UUIDComponent } from '../components/UUIDComponent'
+import { VariantComponent } from '../components/VariantComponent'
+import { VideoComponent } from '../components/VideoComponent'
 import { VisibleComponent } from '../components/VisibleComponent'
+import { VolumetricComponent } from '../components/VolumetricComponent'
+import { WaterComponent } from '../components/WaterComponent'
 import { getUniqueName } from '../functions/getUniqueName'
+import { FogSettingState } from './FogSystem'
 
-const toCapitalCase = (str: string) =>
-  str
-    .split(' ')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ')
+/** This const MUST be kept here, to ensure all components definitions are loaded by the time the scene loading occurs */
+export const SceneComponents = [
+  PositionalAudioComponent,
+  LoopAnimationComponent,
+  BehaveGraphComponent,
+  GrabbableComponent,
+  AmbientLightComponent,
+  CameraSettingsComponent,
+  CloudComponent,
+  ColliderComponent,
+  DirectionalLightComponent,
+  EnvMapBakeComponent,
+  EnvmapComponent,
+  FogSettingState,
+  GroundPlaneComponent,
+  GroupComponent,
+  HemisphereLightComponent,
+  ImageComponent,
+  InteriorComponent,
+  LoadVolumeComponent,
+  MediaComponent,
+  MountPointComponent,
+  OceanComponent,
+  ParticleSystemComponent,
+  PointLightComponent,
+  PostProcessingComponent,
+  PrefabComponent,
+  RenderSettingsComponent,
+  SceneDynamicLoadTagComponent,
+  ScenePreviewCameraComponent,
+  ScreenshareTargetComponent,
+  ShadowComponent,
+  SkyboxComponent,
+  SpawnPointComponent,
+  SplineComponent,
+  SystemComponent,
+  SplineComponent,
+  SpotLightComponent,
+  SystemComponent,
+  VariantComponent,
+  VideoComponent,
+  VisibleComponent,
+  VolumetricComponent,
+  WaterComponent,
+  TransformComponent,
+  XRAnchorComponent
+]
 
-export const createNewEditorNode = (entityNode: Entity, prefabType: string): void => {
-  const components = Engine.instance.scenePrefabRegistry.get(prefabType)
-  if (!components) return console.warn(`[createNewEditorNode]: ${prefabType} is not a prefab`)
-
-  const name = getUniqueName(entityNode, `New ${toCapitalCase(prefabType)}`)
+export const createNewEditorNode = (entityNode: Entity, componentName: string): void => {
+  const components = [
+    { name: ComponentMap.get(componentName)!.jsonID! },
+    { name: ComponentMap.get(VisibleComponent.name)!.jsonID! },
+    { name: ComponentMap.get(TransformComponent.name)!.jsonID! }
+  ]
+  const name = getUniqueName(entityNode, `New ${startCase(components[0].name.toLowerCase())}`)
 
   addEntityNodeChild(entityNode, getState(SceneState).sceneEntity)
   // Clone the defualt values so that it will not be bound to newly created node
   deserializeSceneEntity(entityNode, {
     name,
-    type: prefabType.toLowerCase().replace(/\s/, '_'),
+    type: componentName.toLowerCase().replace(/\s/, '_'),
     components: cloneDeep(components)
   })
 }

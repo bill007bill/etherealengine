@@ -27,7 +27,7 @@ import { DockLayout, DockMode, LayoutData, TabData } from 'rc-dock'
 
 import 'rc-dock/dist/rc-dock.css'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
@@ -38,7 +38,6 @@ import multiLogger from '@etherealengine/common/src/logger'
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
 import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { SceneState } from '@etherealengine/engine/src/ecs/classes/Scene'
-import { unloadScene } from '@etherealengine/engine/src/ecs/functions/EngineFunctions'
 import { gltfToSceneJson, sceneToGLTF } from '@etherealengine/engine/src/scene/functions/GLTFConversion'
 import { dispatchAction, getMutableState, getState, useHookstate } from '@etherealengine/hyperflux'
 
@@ -489,13 +488,6 @@ const EditorContainer = () => {
 
   useEffect(() => {
     if (!dockPanelRef.current) return
-
-    dockPanelRef.current.updateTab('viewPanel', {
-      id: 'viewPanel',
-      title: 'Viewport',
-      content: viewPortPanelContent(!sceneLoaded.value)
-    })
-
     const activePanel = sceneLoaded.value ? 'filesPanel' : 'scenePanel'
     dockPanelRef.current.updateTab(activePanel, dockPanelRef.current.find(activePanel) as TabData, true)
   }, [sceneLoaded])
@@ -540,16 +532,17 @@ const EditorContainer = () => {
     ]
   }
 
-  const viewPortPanelContent = useCallback((shouldDisplay) => {
-    return shouldDisplay ? (
+  const ViewPortPanelContent = () => {
+    const sceneLoaded = useHookstate(getMutableState(EngineState)).sceneLoaded.value
+    return sceneLoaded ? (
+      <div />
+    ) : (
       <div className={styles.bgImageBlock}>
         <img src="/static/etherealengine.png" alt="" />
         <h2>{t('editor:selectSceneMsg')}</h2>
       </div>
-    ) : (
-      <div />
     )
-  }, [])
+  }
 
   const toolbarMenu = generateToolbarMenu()
 
@@ -603,7 +596,7 @@ const EditorContainer = () => {
                 {
                   id: 'viewPanel',
                   title: 'Viewport',
-                  content: viewPortPanelContent(true)
+                  content: <ViewPortPanelContent />
                 }
               ],
               size: 1

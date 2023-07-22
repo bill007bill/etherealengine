@@ -23,7 +23,6 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
-import _ from 'lodash'
 import { EffectComposer, NormalPass, RenderPass } from 'postprocessing'
 import { useEffect } from 'react'
 import {
@@ -31,7 +30,7 @@ import {
   PCFSoftShadowMap,
   PerspectiveCamera,
   ShadowMapType,
-  sRGBEncoding,
+  SRGBColorSpace,
   ToneMapping,
   WebGL1Renderer,
   WebGLRenderer,
@@ -47,8 +46,7 @@ import { Engine } from '../ecs/classes/Engine'
 import { EngineActions, EngineState } from '../ecs/classes/EngineState'
 import { defineSystem } from '../ecs/functions/SystemFunctions'
 import { ObjectLayers } from '../scene/constants/ObjectLayers'
-import { defaultPostProcessingSchema } from '../scene/constants/PostProcessing'
-import { EffectMapType } from '../scene/constants/PostProcessing'
+import { defaultPostProcessingSchema, EffectMapType } from '../scene/constants/PostProcessing'
 import { createWebXRManager, WebXRManager } from '../xr/WebXRManager'
 import { XRState } from '../xr/XRState'
 import { changeRenderMode } from './functions/changeRenderMode'
@@ -148,7 +146,7 @@ export class EngineRenderer {
     this.renderer = renderer
     // @ts-ignore
     this.renderer.useLegacyLights = false //true
-    this.renderer.outputEncoding = sRGBEncoding
+    this.renderer.outputColorSpace = SRGBColorSpace
 
     // DISABLE THIS IF YOU ARE SEEING SHADER MISBEHAVING - UNCHECK THIS WHEN TESTING UPDATING THREEJS
     this.renderer.debug.checkShaderErrors = false //isDev
@@ -322,7 +320,7 @@ const reactor = () => {
 
   useEffect(() => {
     configureEffectComposer()
-  }, [postprocessing, postprocessing.effects, engineRendererSettings.usePostProcessing])
+  }, [postprocessing.enabled, postprocessing.effects, engineRendererSettings.usePostProcessing])
 
   useEffect(() => {
     EngineRenderer.instance.scaleFactor =
