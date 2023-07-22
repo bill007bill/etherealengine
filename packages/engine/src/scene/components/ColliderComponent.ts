@@ -29,7 +29,6 @@ import { Quaternion, Vector3 } from 'three'
 
 import { getState } from '@etherealengine/hyperflux'
 
-import { Engine } from '../../ecs/classes/Engine'
 import { EngineState } from '../../ecs/classes/EngineState'
 import {
   defineComponent,
@@ -47,6 +46,7 @@ import { InputComponent } from '../../input/components/InputComponent'
 import { Physics } from '../../physics/classes/Physics'
 import { RigidBodyComponent } from '../../physics/components/RigidBodyComponent'
 import { CollisionGroups, DefaultCollisionMask } from '../../physics/enums/CollisionGroups'
+import { PhysicsState } from '../../physics/state/PhysicsState'
 import { TransformComponent } from '../../transform/components/TransformComponent'
 import { computeTransformMatrix, updateGroupChildren } from '../../transform/systems/TransformSystem'
 import { GLTFLoadedComponent } from './GLTFLoadedComponent'
@@ -156,12 +156,13 @@ export const ColliderComponent = defineComponent({
 
     useEffect(() => {
       const isMeshCollider = [ShapeType.TriMesh, ShapeType.ConvexPolyhedron].includes(colliderComponent.shapeType.value)
+      const physicsWorld = getState(PhysicsState).physicsWorld
 
       if (isLoadedFromGLTF?.value || isMeshCollider) {
         const colliderComponent = getComponent(entity, ColliderComponent)
 
         if (hasComponent(entity, RigidBodyComponent)) {
-          Physics.removeRigidBody(entity, Engine.instance.physicsWorld)
+          Physics.removeRigidBody(entity, physicsWorld)
         }
 
         computeTransformMatrix(entity)
@@ -172,7 +173,7 @@ export const ColliderComponent = defineComponent({
 
         Physics.createRigidBodyForGroup(
           entity,
-          Engine.instance.physicsWorld,
+          physicsWorld,
           {
             bodyType: colliderComponent.bodyType,
             shapeType: colliderComponent.shapeType,
@@ -216,7 +217,7 @@ export const ColliderComponent = defineComponent({
                 bodyDesc = RigidBodyDesc.fixed()
                 break
             }
-            Physics.createRigidBody(entity, Engine.instance.physicsWorld, bodyDesc, [])
+            Physics.createRigidBody(entity, physicsWorld, bodyDesc, [])
           }
         }
 
@@ -225,7 +226,7 @@ export const ColliderComponent = defineComponent({
         /**
          * This component only supports one collider, always at index 0
          */
-        Physics.removeCollidersFromRigidBody(entity, Engine.instance.physicsWorld)
+        Physics.removeCollidersFromRigidBody(entity, physicsWorld)
         const colliderDesc = createColliderDescFromScale(
           colliderComponent.shapeType.value,
           transformComponent.scale.value
@@ -246,7 +247,7 @@ export const ColliderComponent = defineComponent({
           new Vector3(),
           new Quaternion()
         )
-        Engine.instance.physicsWorld.createCollider(colliderDesc, rigidbody.body)
+        physicsWorld.createCollider(colliderDesc, rigidbody.body)
 
         rigidbody.body.setTranslation(transformComponent.position.value, true)
         rigidbody.body.setRotation(transformComponent.rotation.value, true)
